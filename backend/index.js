@@ -19,22 +19,10 @@ const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://travelsite-react-express-typl.vercel.app',
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true, // kalau kamu kirim cookie atau auth header
+  origin: ['http://localhost:3000', 'https://travelsite-react-express-typl.vercel.app'], // bisa ditambahkan origin dari frontend production
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
 
 
