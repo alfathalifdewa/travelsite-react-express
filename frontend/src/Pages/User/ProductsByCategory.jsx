@@ -129,7 +129,7 @@ const ProductsByCategory = () => {
     if (product.images && product.images.length > 0) {
       return product.images[0];
     }
-    return product.image || '/placeholder-image.jpg';
+    return product.image || '/assets/placeholder-image.png';
   };
 
   // Handle "All Products" button click
@@ -241,7 +241,8 @@ const ProductsByCategory = () => {
                                 transition: 'transform 0.3s'
                               }}
                               onError={(e) => {
-                                e.target.src = '/placeholder-image.jpg';
+                                e.target.onerror = null; // Prevent infinite loop
+                                e.target.src = '/assets/placeholder-image.png';
                               }}
                             />
                           </div>

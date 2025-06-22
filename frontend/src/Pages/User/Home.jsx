@@ -218,6 +218,10 @@ const Home = () => {
                         src={renderProductImage(product)} 
                         className="product-card-img" 
                         style={{ height: '200px', objectFit: 'cover' }}
+                        onError={(e) => {
+                          e.target.onerror = null; // Prevent infinite loop
+                          e.target.src = '/assets/placeholder-image.png'; // Fallback image
+                        }}
                       />
                       <Card.Body className="d-flex flex-column justify-content-between">
                         <Card.Title className="product-name">{product.productName}</Card.Title>

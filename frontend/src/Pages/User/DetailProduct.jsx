@@ -83,9 +83,13 @@ const DetailProduct = () => {
     if (!product?.images || product.images.length === 0) {
       return (
         <Image 
-          src={product?.image || '/placeholder-image.jpg'} 
+          src={product?.image || '/assets/placeholder-image.png'} 
           alt={product?.productName || 'Product'} 
           fluid 
+          onError={(e) => {
+            e.target.error = null; // Prevent infinite loop
+            e.target.src = '/assets/placeholder-image.png'; // Fallback image
+          }}
         />
       );
     }
@@ -99,6 +103,10 @@ const DetailProduct = () => {
           src={imagesToShow[0]} 
           alt={product.productName} 
           fluid 
+          onError={(e) => {
+            e.target.error = null; // Prevent infinite loop
+            e.target.src = '/assets/placeholder-image.png'; // Fallback image
+          }}
         />
       );
     }

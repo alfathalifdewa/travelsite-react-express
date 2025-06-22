@@ -9,6 +9,19 @@ import Header from "../../Components/User/Header";
 import Footer from "../../Components/User/Footer";
 import api from '../../api';
 
+
+// Helper function to get image URL with fallback
+const getImageUrl = (imageUrl) => {
+  if (!imageUrl) return '/assets/placeholder-image.png';
+  
+  // If it's already a full URL, return as is
+  if (imageUrl.startsWith('http')) return imageUrl;
+  
+  // If it's a relative path, construct full URL
+  // Adjust this based on your backend image serving setup
+  return `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${imageUrl}`;
+};
+
 const Cart = () => {
   const [address, setAddress] = useState('');
   const [userAddress, setUserAddress] = useState('');
@@ -242,10 +255,14 @@ const Cart = () => {
                             <Row className="align-items-center">
                               <Col md={2}>
                                 <img
-                                  src={product.image}
+                                  src={getImageUrl(product.images?.length? product.images[0]: product.image)}
                                   alt={product.productName}
                                   className="img-fluid rounded"
                                   style={{ maxHeight: '80px', objectFit: 'cover' }}
+                                  onError={(e) => {
+                                    e.target.error = null; // Prevent infinite loop
+                                    e.target.src = '/assets/placeholder-image.png';
+                                  }}
                                 />
                               </Col>
                               <Col md={4}>
