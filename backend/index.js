@@ -21,8 +21,7 @@ app.use(bodyParser.json());
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://namadomainfrontend.com',
-  'https://frontend-lain.vercel.app',
+  'https://travelsite-react-express-typl.vercel.app',
 ];
 
 app.use(cors({
