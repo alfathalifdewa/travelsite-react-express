@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'https://travelsite-react-express-n1kx38w2o-mataelangs-projects.vercel.app',
   headers: {
     'Content-Type': 'application/json',
   },

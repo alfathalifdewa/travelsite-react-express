@@ -65,7 +65,7 @@ const FloatingCart = ({ hideCartButton }) => {
 
   // Helper function to get image URL with fallback
   const getImageUrl = (imageUrl) => {
-    if (!imageUrl) return '/placeholder.png';
+    if (!imageUrl) return '/assets/placeholder-image.png';
     
     // If it's already a full URL, return as is
     if (imageUrl.startsWith('http')) return imageUrl;
@@ -132,12 +132,13 @@ const FloatingCart = ({ hideCartButton }) => {
                           <Row className="align-items-center">
                             <Col xs={3}>
                               <Image 
-                                src={getImageUrl(item.product.image)} 
+                                src={getImageUrl(item.product.images?.length? item.product.images[0]:item.product.image )} 
                                 alt={item.product.productName}
                                 thumbnail 
                                 style={{ width: '60px', height: '60px', objectFit: 'cover' }}
                                 onError={(e) => {
-                                  e.target.src = '/placeholder.png';
+                                  e.target.error = null; // Prevent infinite loop
+                                  e.target.src = '/assets/placeholder-image.png';
                                 }}
                               />
                             </Col>
