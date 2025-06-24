@@ -1,328 +1,181 @@
 import Product from "../models/productModel.js";
 import Category from "../models/categoryModel.js";
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
+
+// Utility function to ensure uploads folder exists
+const ensureUploadsFolder = () => {
+  const folder = path.join(process.cwd(), "uploads/products");
+  if (!fs.existsSync(folder)) {
+    fs.mkdirSync(folder, { recursive: true });
+  }
+  return folder;
+};
+
+// Move uploaded files
+const uploads = async (files) => {
+  const folder = ensureUploadsFolder();
+  return Promise.all(
+    files.map((file) => {
+      const dest = path.join(folder, file.filename);
+      return new Promise((resolve, reject) => {
+        fs.rename(file.path, dest, (err) => {
+          if (err) return reject(err);
+          resolve(`/uploads/products/${file.filename}`);
+        });
+      });
+    })
+  );
+};
+
+// Delete uploaded files (cleanup)
+const deleteFiles = async (files) => {
+  for (const file of files) {
+    fs.unlink(file.path, (err) => {
+      if (err) console.error("Error deleting file:", err);
+    });
+  }
+};
 
 // Get all products
 export const getProducts = async (req, res) => {
   try {
-    let products = await Product.find().populate('id_category', 'categoryName');
-    
-    const productsWithImageUrls = products.map(product => ({
-      ...product._doc,
-      images: product.images?.map(imagePath => 
-        imagePath ? `${req.protocol}://${req.get('host')}${imagePath}` : null
-      ).filter(Boolean) || []
+    const products = await Product.find().populate("id_category", "categoryName");
+    const mapped = products.map((p) => ({
+      ...p._doc,
+      images: (p.images || []).map((img) => `${req.protocol}://${req.get("host")}${img}`),
     }));
-    
-    res.status(200).json({ 
-      success: true,
-      products: productsWithImageUrls 
-    });
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ 
-      success: false,
-      message: "Server Error",
-      error: error.message 
-    });
+    res.json({ success: true, products: mapped });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
-const uploads = async (files) => {
-  const folder = path.join(process.cwd(), 'uploads/products');
-  if (!fs.existsSync(folder)) {
-    fs.mkdirSync(folder, { recursive: true });
-  }
-  const promises = files.map(file => {
-    const fileName = file.filename;
-    const dest = path.join(folder, fileName);
-    const originalPath = file.path;
-    return new Promise((resolve, reject) => {
-      const readStream = fs.createReadStream(originalPath);
-      const writeStream = fs.createWriteStream(dest);
-      readStream.pipe(writeStream);
-      writeStream.on('finish', () => {
-        resolve(`/uploads/products/${fileName}`); // Return the relative path
-      });
-      readStream.on("error", reject);
-      writeStream.on("error", reject);
-    });
-  });
-  return Promise.all(promises);
-}
-
-const deleteFiles = async (files) => {
-  return Promise.all(files.map(file => {
-    return new Promise((resolve) => {
-      fs.unlink(file.path, (err) => {
-        if (err) console.error('Error deleting file:', err);
-        resolve();
-      });
-    });
-  }));
-};
-
-// Post a new product
-export const postProducts = async (req, res) => {
-  const { productName, id_category, desc, price } = req.body;
-
+// Get product by ID
+export const getProductsById = async (req, res) => {
   try {
-    // Validasi input
-    if (!productName || !id_category || !price) {
-      return res.status(400).json({
-        success: false,
-        message: "Product name, category, and price are required"
-      });
-    }
+    const product = await Product.findById(req.params.id).populate("id_category", "categoryName");
+    if (!product) return res.status(404).json({ success: false, message: "Product Not Found" });
 
-    // Proses multiple images
-    let fileError = false;
-    let images = [];
-    if (req.files?.length > 0) {
-      try {
-        images = await uploads(req.files);
-        console.log('Uploaded images:', images); // Debug log
-      } catch (error) {
-        console.error('Error processing files:', error);
-        fileError = true;
-      }
-    }
+    res.json({
+      success: true,
+      product: {
+        ...product._doc,
+        images: (product.images || []).map((img) => `${req.protocol}://${req.get("host")}${img}`),
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
 
-    if (fileError) throw new Error("Error processing uploaded files");
+// Create product
+export const postProducts = async (req, res) => {
+  try {
+    const { productName, id_category, desc, price } = req.body;
+    if (!productName || !id_category || !price)
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+
+    const images = req.files?.length ? await uploads(req.files) : [];
 
     const newProduct = new Product({
       productName,
       id_category,
-      images: images,
       desc,
       price: parseFloat(price),
+      images,
     });
-
     const saved = await newProduct.save();
-    await saved.populate('id_category', 'categoryName');
-    res.status(201).json({
-      success: true,
-      message: "Product created successfully",
-      product: saved
-    });
-  } catch (error) {
-    console.error('Error saving product:', error);
-    if (req.files?.length) {
-      // delete req.files;
-      await deleteFiles(req.files);
-    }
-    res.status(500).json({
-      success: false,
-      message: 'Server Error',
-      error: error.message
-    });
+    await saved.populate("id_category", "categoryName");
+
+    res.status(201).json({ success: true, message: "Product created", product: saved });
+  } catch (err) {
+    console.error(err);
+    if (req.files) await deleteFiles(req.files);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
-// Get a product by ID
-export const getProductsById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    let product = await Product.findById(id).populate('id_category', 'categoryName');
-
-    if (!product) {
-      return res.status(404).json({ 
-        success: false,
-        message: "Product Not Found" 
-      });
-    }
-
-    // Convert image paths to full URLs
-    const productWithImageUrls = {
-      ...product._doc,
-      images: product.images?.map(imagePath => 
-        imagePath ? `${req.protocol}://${req.get('host')}${imagePath}` : null
-      ).filter(Boolean) || []
-    };
-
-    res.status(200).json({ 
-      success: true,
-      product: productWithImageUrls 
-    });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-      error: error.message
-    });
-  }
-};
-
-// Update a product
+// Update product
 export const updateProduct = async (req, res) => {
-  const { id } = req.params;
-  const { productName, id_category, desc, price, removeImages } = req.body;
-
   try {
-    let product = await Product.findById(id);
+    const { productName, id_category, desc, price, removeImages } = req.body;
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ success: false, message: "Product Not Found" });
 
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product Not Found"
-      });
-    }
-
-    // Handle image removal
+    // Remove images if requested
     if (removeImages) {
-      const removes = JSON.parse(removeImages);
-      const payload = removes.map(img => {
-        const fileUrl = img.replace(/^https?:\/\/[^/]+/, '');
-        return fileUrl.substring(fileUrl.indexOf('/')); // Remove leading slash
-      });
-      payload.forEach(imagePath => {
-        const fullPath = path.join(process.cwd(), imagePath.replace('/', ''));
+      const removeList = JSON.parse(removeImages);
+      removeList.forEach((url) => {
+        const relative = url.replace(`${req.protocol}://${req.get("host")}`, "");
+        const fullPath = path.join(process.cwd(), relative);
         fs.unlink(fullPath, (err) => {
-          if (err) console.error('Error deleting file:', err);
+          if (err) console.error("Error deleting image:", err);
         });
+        product.images = product.images.filter((img) => img !== relative);
       });
-
-      product.images = product.images.filter(img => !payload.includes(img));
-      console.log('Images after removal:', product.images); // Debug log
     }
 
     // Add new images
-    let fileError = false;
-    if (req.files && req.files.length > 0) {
-      // Proses multiple images
-      let images = [];
-      try {
-        images = await uploads(req.files);
-        console.log('Uploaded images:', images); // Debug log
-      } catch (error) {
-        console.error('Error processing files:', error);
-        fileError = true;
-      }
-      product.images = [...product.images, ...images];
-    }
+    const newImages = req.files?.length ? await uploads(req.files) : [];
+    product.images = [...product.images, ...newImages];
 
-    if (fileError) throw new Error("Error processing uploaded files");
-
-    // Update other fields
+    // Update fields
     if (productName) product.productName = productName;
     if (id_category) product.id_category = id_category;
     if (desc !== undefined) product.desc = desc;
     if (price) product.price = parseFloat(price);
 
-    const updatedProduct = await product.save();
-    await updatedProduct.populate('id_category', 'categoryName');
-    
-    res.status(200).json({ 
-      success: true,
-      message: "Product updated successfully",
-      product: updatedProduct 
-    });
-  } catch (error) {
-    console.error(error.message);
-    // Hapus file yang baru diupload jika terjadi error
-    if (req.files) {
-      // Hapus file yang sudah diupload
-      await deleteFiles(req.files);
-    }
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-      error: error.message
-    });
+    const updated = await product.save();
+    await updated.populate("id_category", "categoryName");
+
+    res.json({ success: true, message: "Product updated", product: updated });
+  } catch (err) {
+    console.error(err);
+    if (req.files) await deleteFiles(req.files);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
-// Delete a product
+// Delete product
 export const deleteProduct = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const product = await Product.findById(id);
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ success: false, message: "Product Not Found" });
 
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product Not Found"
+    product.images.forEach((img) => {
+      const fullPath = path.join(process.cwd(), img);
+      fs.unlink(fullPath, (err) => {
+        if (err) console.error("Error deleting image:", err);
       });
-    }
-
-    // Delete associated images
-    if (product.images && product.images.length > 0) {
-      product.images.forEach(imagePath => {
-        const fullPath = path.join(process.cwd(), imagePath.replace('/', ''));
-        fs.unlink(fullPath, (err) => {
-          if (err) console.error('Error deleting file:', err);
-        });
-      });
-    }
+    });
 
     await product.deleteOne();
-    res.status(200).json({
-      success: true,
-      message: "Product Successfully Deleted"
-    });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-      error: error.message
-    });
+    res.json({ success: true, message: "Product deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
 // Get products by category
-// Contoh implementasi controller getProductsByCategory
 export const getProductsByCategory = async (req, res) => {
   try {
-    const { id_category } = req.params;
-    
-    console.log('Getting products for category:', id_category); // Debug log
+    const category = await Category.findById(req.params.id_category);
+    if (!category)
+      return res.json({ success: true, message: "Category Not Found", products: [], count: 0 });
 
-
-    const category = await Category.findOne({ $or: [ {_id: id_category }, { id_category: id_category }] });
-
-    if (!category) {
-      return res.status(200).json({
-        success: true,
-        message: 'No products found for this category',
-        products: [],
-        count: 0
-      });
-    }
-
-    console.log('Found category:', category); // Debug log
-
-    // Find products by category with proper population
-    const products = await Product.find({ 
-      id_category: category._id,
-    }).populate('id_category', 'categoryName');
-    
-    console.log('Found products:', products.length); // Debug log
-    
-    // Convert image paths to full URLs (same as getProducts)
-    const productsWithImageUrls = products.map(product => ({
-      ...product._doc,
-      images: product.images?.map(imagePath => 
-        imagePath ? `${req.protocol}://${req.get('host')}${imagePath}` : null
-      ).filter(Boolean) || []
+    const products = await Product.find({ id_category: category._id }).populate("id_category", "categoryName");
+    const mapped = products.map((p) => ({
+      ...p._doc,
+      images: (p.images || []).map((img) => `${req.protocol}://${req.get("host")}${img}`),
     }));
-    
-    res.status(200).json({
-      success: true,
-      message: products.length > 0 ? 'Products found successfully' : 'No products found for this category',
-      products: productsWithImageUrls,
-      count: productsWithImageUrls.length
-    });
-    
-  } catch (error) {
-    console.error('Error in getProductsByCategory:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server Error',
-      error: error.message
-    });
+
+    res.json({ success: true, products: mapped, count: mapped.length });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
