@@ -1,51 +1,12 @@
 import Product from "../models/productModel.js";
 import Category from "../models/categoryModel.js";
-import fs from "fs";
-import path from "path";
-
-// Utility function to ensure uploads folder exists
-const ensureUploadsFolder = () => {
-  const folder = path.join(process.cwd(), "uploads/products");
-  if (!fs.existsSync(folder)) {
-    fs.mkdirSync(folder, { recursive: true });
-  }
-  return folder;
-};
-
-// Move uploaded files
-const uploads = async (files) => {
-  const folder = ensureUploadsFolder();
-  return Promise.all(
-    files.map((file) => {
-      const dest = path.join(folder, file.filename);
-      return new Promise((resolve, reject) => {
-        fs.rename(file.path, dest, (err) => {
-          if (err) return reject(err);
-          resolve(`/uploads/products/${file.filename}`);
-        });
-      });
-    })
-  );
-};
-
-// Delete uploaded files (cleanup)
-const deleteFiles = async (files) => {
-  for (const file of files) {
-    fs.unlink(file.path, (err) => {
-      if (err) console.error("Error deleting file:", err);
-    });
-  }
-};
+import { put, del } from '@vercel/blob';
 
 // Get all products
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("id_category", "categoryName");
-    const mapped = products.map((p) => ({
-      ...p._doc,
-      images: (p.images || []).map((img) => `${req.protocol}://${req.get("host")}${img}`),
-    }));
-    res.json({ success: true, products: mapped });
+    res.json({ success: true, products });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Server Error" });
@@ -58,13 +19,7 @@ export const getProductsById = async (req, res) => {
     const product = await Product.findById(req.params.id).populate("id_category", "categoryName");
     if (!product) return res.status(404).json({ success: false, message: "Product Not Found" });
 
-    res.json({
-      success: true,
-      product: {
-        ...product._doc,
-        images: (product.images || []).map((img) => `${req.protocol}://${req.get("host")}${img}`),
-      },
-    });
+    res.json({ success: true, product });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Server Error" });
@@ -74,26 +29,29 @@ export const getProductsById = async (req, res) => {
 // Create product
 export const postProducts = async (req, res) => {
   try {
-    const { productName, id_category, desc, price } = req.body;
-    if (!productName || !id_category || !price)
+    const { productName, id_category, desc, price, images } = req.body;
+    
+    if (!productName || !id_category || !price) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
 
-    const images = req.files?.length ? await uploads(req.files) : [];
+    // Validate images array
+    const imageUrls = Array.isArray(images) ? images : [];
 
     const newProduct = new Product({
       productName,
       id_category,
       desc,
       price: parseFloat(price),
-      images,
+      images: imageUrls,
     });
+    
     const saved = await newProduct.save();
     await saved.populate("id_category", "categoryName");
 
     res.status(201).json({ success: true, message: "Product created", product: saved });
   } catch (err) {
     console.error(err);
-    if (req.files) await deleteFiles(req.files);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
@@ -101,26 +59,39 @@ export const postProducts = async (req, res) => {
 // Update product
 export const updateProduct = async (req, res) => {
   try {
-    const { productName, id_category, desc, price, removeImages } = req.body;
+    const { productName, id_category, desc, price, images, removeImages } = req.body;
+    
     const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ success: false, message: "Product Not Found" });
-
-    // Remove images if requested
-    if (removeImages) {
-      const removeList = JSON.parse(removeImages);
-      removeList.forEach((url) => {
-        const relative = url.replace(`${req.protocol}://${req.get("host")}`, "");
-        const fullPath = path.join(process.cwd(), relative);
-        fs.unlink(fullPath, (err) => {
-          if (err) console.error("Error deleting image:", err);
-        });
-        product.images = product.images.filter((img) => img !== relative);
-      });
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product Not Found" });
     }
 
-    // Add new images
-    const newImages = req.files?.length ? await uploads(req.files) : [];
-    product.images = [...product.images, ...newImages];
+    // Handle image removal from Vercel Blob
+    if (removeImages && Array.isArray(removeImages)) {
+      try {
+        // Delete images from Vercel Blob
+        const deletePromises = removeImages.map(async (imageUrl) => {
+          try {
+            await del(imageUrl);
+            console.log(`Deleted image: ${imageUrl}`);
+          } catch (deleteError) {
+            console.error(`Failed to delete image ${imageUrl}:`, deleteError);
+          }
+        });
+        
+        await Promise.all(deletePromises);
+        
+        // Remove URLs from product.images array
+        product.images = product.images.filter(img => !removeImages.includes(img));
+      } catch (error) {
+        console.error('Error removing images:', error);
+      }
+    }
+
+    // Add new images (already uploaded from frontend)
+    if (images && Array.isArray(images)) {
+      product.images = [...product.images, ...images];
+    }
 
     // Update fields
     if (productName) product.productName = productName;
@@ -134,7 +105,6 @@ export const updateProduct = async (req, res) => {
     res.json({ success: true, message: "Product updated", product: updated });
   } catch (err) {
     console.error(err);
-    if (req.files) await deleteFiles(req.files);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
@@ -143,14 +113,27 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ success: false, message: "Product Not Found" });
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product Not Found" });
+    }
 
-    product.images.forEach((img) => {
-      const fullPath = path.join(process.cwd(), img);
-      fs.unlink(fullPath, (err) => {
-        if (err) console.error("Error deleting image:", err);
-      });
-    });
+    // Delete all images from Vercel Blob
+    if (product.images && product.images.length > 0) {
+      try {
+        const deletePromises = product.images.map(async (imageUrl) => {
+          try {
+            await del(imageUrl);
+            console.log(`Deleted image: ${imageUrl}`);
+          } catch (deleteError) {
+            console.error(`Failed to delete image ${imageUrl}:`, deleteError);
+          }
+        });
+        
+        await Promise.all(deletePromises);
+      } catch (error) {
+        console.error('Error deleting product images:', error);
+      }
+    }
 
     await product.deleteOne();
     res.json({ success: true, message: "Product deleted" });
@@ -164,16 +147,13 @@ export const deleteProduct = async (req, res) => {
 export const getProductsByCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id_category);
-    if (!category)
+    if (!category) {
       return res.json({ success: true, message: "Category Not Found", products: [], count: 0 });
+    }
 
     const products = await Product.find({ id_category: category._id }).populate("id_category", "categoryName");
-    const mapped = products.map((p) => ({
-      ...p._doc,
-      images: (p.images || []).map((img) => `${req.protocol}://${req.get("host")}${img}`),
-    }));
 
-    res.json({ success: true, products: mapped, count: mapped.length });
+    res.json({ success: true, products, count: products.length });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Server Error" });

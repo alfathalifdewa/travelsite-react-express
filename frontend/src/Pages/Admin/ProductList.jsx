@@ -6,7 +6,7 @@ import {
 } from "react-bootstrap";
 import api from "../../api";
 import HeaderDashboard from "../../Components/Admin/HeaderDashboard";
-import { uploadImagesToBlob } from "../../utils/uploadBlob";
+import { uploadImagesToBlob, validateFiles } from "../../utils/uploadBlob";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -28,6 +28,7 @@ const ProductList = () => {
   });
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
+  const [imagesToRemove, setImagesToRemove] = useState([]);
 
   useEffect(() => {
     fetchProducts();
@@ -63,6 +64,7 @@ const ProductList = () => {
     setNewProduct({ productName: "", id_category: "", images: [], desc: "", price: 0 });
     setSelectedFiles([]);
     setPreviewImages([]);
+    setImagesToRemove([]);
     setUploadProgress(0);
     setError("");
     setSuccess("");
@@ -79,6 +81,7 @@ const ProductList = () => {
         desc: product.desc || "",
         price: product.price,
       });
+      // Set existing images as preview
       setPreviewImages(product.images || []);
     }
     setShowModal(true);
@@ -87,6 +90,12 @@ const ProductList = () => {
   const closeModal = () => {
     setShowModal(false);
     resetForm();
+    // Clean up object URLs to prevent memory leaks
+    previewImages.forEach(url => {
+      if (url.startsWith('blob:')) {
+        URL.revokeObjectURL(url);
+      }
+    });
   };
 
   const handleInput = e => {
@@ -96,62 +105,52 @@ const ProductList = () => {
 
   const handleFileChange = e => {
     const files = Array.from(e.target.files);
-    const maxSize = 10 * 1024 * 1024; // 10MB
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
     
-    // Validasi files
-    const validFiles = [];
-    const errors = [];
+    if (files.length === 0) return;
     
-    for (let file of files) {
-      if (!allowedTypes.includes(file.type)) {
-        errors.push(`Invalid file type: ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
-        continue;
-      }
-      
-      if (file.size > maxSize) {
-        errors.push(`File too large: ${file.name}. Maximum size is 10MB.`);
-        continue;
-      }
-      
-      validFiles.push(file);
-    }
-    
-    // Tampilkan error jika ada
-    if (errors.length > 0) {
-      setError(errors.join(' '));
+    // Validate files
+    const validation = validateFiles(files);
+    if (!validation.isValid) {
+      setError(validation.errors.join(' '));
       return;
     }
     
-    // Check total file limit
-    const totalFiles = selectedFiles.length + validFiles.length;
+    // Check total file limit including existing images
+    const totalFiles = previewImages.length + files.length;
     if (totalFiles > 10) {
-      setError(`Maximum 10 images allowed. You're trying to add ${totalFiles} images.`);
+      setError(`Maximum 10 images allowed. You currently have ${previewImages.length} images and trying to add ${files.length} more.`);
       return;
     }
 
-    // Create preview URLs
-    const newPreviewUrls = validFiles.map(file => URL.createObjectURL(file));
+    // Create preview URLs for new files
+    const newPreviewUrls = files.map(file => URL.createObjectURL(file));
     
-    setSelectedFiles(prev => [...prev, ...validFiles]);
+    setSelectedFiles(prev => [...prev, ...files]);
     setPreviewImages(prev => [...prev, ...newPreviewUrls]);
     setError("");
   };
 
   const removeImage = idx => {
-    const existingCount = newProduct.images.length;
+    const existingImagesCount = newProduct.images.length;
     
-    if (idx < existingCount) {
-      // Remove existing image URL
+    if (idx < existingImagesCount) {
+      // Remove existing image (add to removal list)
+      const imageToRemove = previewImages[idx];
+      setImagesToRemove(prev => [...prev, imageToRemove]);
       setNewProduct(prev => ({
         ...prev,
         images: prev.images.filter((_, i) => i !== idx)
       }));
     } else {
       // Remove new file
-      const fileIndex = idx - existingCount;
+      const fileIndex = idx - existingImagesCount;
+      const previewUrl = previewImages[idx];
+      
       // Revoke object URL to prevent memory leak
-      URL.revokeObjectURL(previewImages[idx]);
+      if (previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      
       setSelectedFiles(prev => prev.filter((_, i) => i !== fileIndex));
     }
     
@@ -183,17 +182,19 @@ const ProductList = () => {
       
       // Upload new images if any
       if (selectedFiles.length > 0) {
-        setUploadProgress(25);
+        setUploadProgress(20);
         console.log(`Starting upload of ${selectedFiles.length} files...`);
         
         try {
           uploadedUrls = await uploadImagesToBlob(selectedFiles);
           console.log(`Successfully uploaded ${uploadedUrls.length} files`);
-          setUploadProgress(75);
+          setUploadProgress(70);
         } catch (uploadError) {
           console.error('Upload failed:', uploadError);
           throw new Error(`Image upload failed: ${uploadError.message}`);
         }
+      } else {
+        setUploadProgress(70);
       }
 
       // Prepare payload
@@ -202,8 +203,13 @@ const ProductList = () => {
         id_category: newProduct.id_category,
         desc: newProduct.desc.trim(),
         price: parseFloat(newProduct.price),
-        images: [...newProduct.images, ...uploadedUrls],
+        images: uploadedUrls, // Only new images for create, or additional images for update
       };
+
+      // Add removal list for updates
+      if (selectedProduct && imagesToRemove.length > 0) {
+        payload.removeImages = imagesToRemove;
+      }
       
       console.log('Submitting payload:', payload);
       setUploadProgress(90);
@@ -444,84 +450,99 @@ const ProductList = () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Description</Form.Label>
                   <Form.Control 
-                    as="textarea" 
+                    as="textarea"
+                    rows={3}
                     name="desc" 
-                    rows={5} 
                     value={newProduct.desc} 
-                    onChange={handleInput}
+                    onChange={handleInput} 
                     placeholder="Enter product description"
                   />
                 </Form.Group>
-              </Col>
-            </Row>
-
-            <Row className="mt-3">
-              <Col>
+                
                 <Form.Group className="mb-3">
-                  <Form.Label>Product Images (Maximum 10 images)</Form.Label>
+                  <Form.Label>Product Images</Form.Label>
                   <Form.Control 
-                    type="file" 
-                    accept="image/jpeg,image/jpg,image/png,image/webp" 
-                    multiple 
+                    type="file"
+                    multiple
+                    accept="image/jpeg,image/jpg,image/png,image/webp"
                     onChange={handleFileChange}
+                    disabled={loading}
                   />
                   <Form.Text className="text-muted">
-                    Supported formats: JPEG, PNG, WebP. Maximum size: 10MB per image.
+                    Select up to 10 images. Supported formats: JPEG, PNG, WebP. Max size: 10MB per image.
                   </Form.Text>
                 </Form.Group>
-                
-                {previewImages.length > 0 && (
-                  <div className="image-preview-container">
-                    <h6>Image Preview:</h6>
-                    <div className="d-flex flex-wrap gap-3 mt-2">
-                      {previewImages.map((url, idx) => (
-                        <div key={idx} className="position-relative">
-                          <Image 
-                            src={url} 
-                            width={120} 
-                            height={120} 
-                            rounded 
-                            className="object-fit-cover border"
-                          />
-                          <Button 
-                            size="sm" 
-                            variant="danger" 
-                            className="position-absolute top-0 end-0 rounded-circle"
-                            style={{ width: '30px', height: '30px' }}
-                            onClick={() => removeImage(idx)}
-                            disabled={loading}
-                          >
-                            ×
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </Col>
             </Row>
-
-            <div className="d-flex justify-content-end gap-2 mt-4">
+            
+            {/* Image Preview */}
+            {previewImages.length > 0 && (
+              <div className="mb-3">
+                <Form.Label>Image Preview ({previewImages.length}/10)</Form.Label>
+                <Row className="g-2">
+                  {previewImages.map((url, idx) => (
+                    <Col key={idx} xs={6} sm={4} md={3} lg={2}>
+                      <div className="position-relative">
+                        <Image 
+                          src={url} 
+                          fluid 
+                          rounded 
+                          className="w-100"
+                          style={{ 
+                            height: '100px', 
+                            objectFit: 'cover',
+                            border: '1px solid #dee2e6'
+                          }}
+                          onError={(e) => {
+                            e.target.src = '/placeholder-image.png';
+                          }}
+                        />
+                        <Button 
+                          variant="danger" 
+                          size="sm" 
+                          className="position-absolute top-0 end-0 rounded-circle"
+                          style={{ 
+                            width: '25px', 
+                            height: '25px', 
+                            padding: '0',
+                            fontSize: '12px',
+                            transform: 'translate(25%, -25%)'
+                          }}
+                          onClick={() => removeImage(idx)}
+                          disabled={loading}
+                        >
+                          ×
+                        </Button>
+                        {idx < newProduct.images.length && (
+                          <Badge 
+                            bg="info" 
+                            className="position-absolute bottom-0 start-0"
+                            style={{ fontSize: '10px' }}
+                          >
+                            Existing
+                          </Badge>
+                        )}
+                      </div>
+                    </Col>
+                  ))}
+                </Row>
+              </div>
+            )}
+            
+            <div className="d-flex justify-content-end gap-2">
               <Button 
                 variant="secondary" 
-                onClick={closeModal} 
+                onClick={closeModal}
                 disabled={loading}
               >
                 Cancel
               </Button>
               <Button 
                 type="submit" 
-                variant="primary" 
+                variant="primary"
                 disabled={loading}
               >
-                {loading ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    {selectedProduct ? "Updating..." : "Creating..."}
-                  </>
-                ) : (
-                  selectedProduct ? "Update Product" : "Create Product"
-                )}
+                {loading ? "Saving..." : selectedProduct ? "Update Product" : "Create Product"}
               </Button>
             </div>
           </Form>
