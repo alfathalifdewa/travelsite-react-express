@@ -6,7 +6,6 @@ import {
 } from "react-bootstrap";
 import api from "../../api";
 import HeaderDashboard from "../../Components/Admin/HeaderDashboard";
-import { uploadImagesToBlob, validateFiles } from "../../utils/uploadBlob";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -57,6 +56,26 @@ const ProductList = () => {
       console.error(err);
       setError("Failed to fetch categories");
     }
+  };
+
+  const validateFiles = (files) => {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const errors = [];
+
+    for (let file of files) {
+      if (!allowedTypes.includes(file.type)) {
+        errors.push(`${file.name}: Invalid file type. Only JPEG, PNG, and WebP are allowed.`);
+      }
+      if (file.size > maxSize) {
+        errors.push(`${file.name}: File size too large. Maximum 10MB allowed.`);
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
   };
 
   const resetForm = () => {
@@ -165,7 +184,7 @@ const ProductList = () => {
     setUploadProgress(0);
 
     try {
-      // Validasi input
+      // Validation
       if (!newProduct.productName.trim()) {
         throw new Error("Product name is required");
       }
@@ -178,48 +197,51 @@ const ProductList = () => {
         throw new Error("Valid price is required");
       }
 
-      let uploadedUrls = [];
-      
-      // Upload new images if any
-      if (selectedFiles.length > 0) {
-        setUploadProgress(20);
-        console.log(`Starting upload of ${selectedFiles.length} files...`);
-        
-        try {
-          uploadedUrls = await uploadImagesToBlob(selectedFiles);
-          console.log(`Successfully uploaded ${uploadedUrls.length} files`);
-          setUploadProgress(70);
-        } catch (uploadError) {
-          console.error('Upload failed:', uploadError);
-          throw new Error(`Image upload failed: ${uploadError.message}`);
-        }
-      } else {
-        setUploadProgress(70);
-      }
+      setUploadProgress(20);
 
-      // Prepare payload
-      const payload = {
-        productName: newProduct.productName.trim(),
-        id_category: newProduct.id_category,
-        desc: newProduct.desc.trim(),
-        price: parseFloat(newProduct.price),
-        images: uploadedUrls, // Only new images for create, or additional images for update
-      };
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('productName', newProduct.productName.trim());
+      formData.append('id_category', newProduct.id_category);
+      formData.append('desc', newProduct.desc.trim());
+      formData.append('price', parseFloat(newProduct.price));
 
-      // Add removal list for updates
+      // Add images to remove (for updates)
       if (selectedProduct && imagesToRemove.length > 0) {
-        payload.removeImages = imagesToRemove;
+        formData.append('removeImages', JSON.stringify(imagesToRemove));
       }
-      
-      console.log('Submitting payload:', payload);
-      setUploadProgress(90);
 
-      // Save product
+      // Add new image files
+      selectedFiles.forEach(file => {
+        formData.append('images', file);
+      });
+
+      setUploadProgress(50);
+
+      console.log('Submitting form data...');
+
+      // Submit form
       if (selectedProduct) {
-        await api.put(`/products/${selectedProduct._id}`, payload);
+        await api.put(`/products/${selectedProduct._id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(50 + (progress * 0.4)); // 50% to 90%
+          }
+        });
         setSuccess("Product updated successfully!");
       } else {
-        await api.post("/products", payload);
+        await api.post("/products", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(50 + (progress * 0.4)); // 50% to 90%
+          }
+        });
         setSuccess("Product created successfully!");
       }
       
@@ -440,7 +462,6 @@ const ProductList = () => {
                     onChange={handleInput} 
                     required 
                     min="0" 
-                    step="1000"
                     placeholder="Enter price"
                   />
                 </Form.Group>

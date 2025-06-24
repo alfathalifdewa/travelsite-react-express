@@ -8,6 +8,7 @@ import {
   getProductsByCategory,
 } from '../controllers/productController.js';
 import { adminMiddleware, authMiddleware } from '../middleware/UserMiddleware.js';
+import upload from '../config/cloudinary.js';
 
 const router = express.Router();
 
@@ -16,9 +17,21 @@ router.get('/category/:id_category', getProductsByCategory);
 router.get('/', getProducts);
 router.get('/:id', getProductsById);
 
-// Remove multer middleware since we're handling uploads on frontend
-router.post('/', authMiddleware, adminMiddleware, postProducts);
-router.put('/:id', authMiddleware, adminMiddleware, updateProduct);
+// Add multer middleware for handling file uploads
+router.post('/', 
+  authMiddleware, 
+  adminMiddleware, 
+  upload.array('images', 10), // Handle up to 10 images
+  postProducts
+);
+
+router.put('/:id', 
+  authMiddleware, 
+  adminMiddleware, 
+  upload.array('images', 10), // Handle up to 10 images for updates
+  updateProduct
+);
+
 router.delete('/:id', authMiddleware, adminMiddleware, deleteProduct);
 
 export default router;
