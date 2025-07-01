@@ -22,7 +22,7 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     
-    // Log request untuk debugging (hapus di production)
+    // Log request untuk debugging
     console.log('API Request:', {
       method: config.method?.toUpperCase(),
       url: config.url,

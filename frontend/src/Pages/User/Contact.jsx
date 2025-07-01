@@ -33,7 +33,7 @@ const Contact = () => {
           <Row>
             <Col xs={12} md={10} lg={8}>
               <h3 className="fs-4 mb-3 text-secondary text-uppercase">
-                Kontak Kami
+                Hubungi Mata Elang Travel
               </h3>
             </Col>
           </Row>
@@ -55,6 +55,7 @@ const Contact = () => {
                           required
                           value={fullname}
                           onChange={(e) => setFullname(e.target.value)}
+                          placeholder="Masukkan nama lengkap Anda"
                         />
                       </Form.Group>
                     </Col>
@@ -68,6 +69,7 @@ const Contact = () => {
                           required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
+                          placeholder="contoh@email.com"
                         />
                       </Form.Group>
                     </Col>
@@ -78,6 +80,7 @@ const Contact = () => {
                           type="tel"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
+                          placeholder="08xxxxxxxxxx"
                         />
                       </Form.Group>
                     </Col>
@@ -92,6 +95,7 @@ const Contact = () => {
                           required
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
+                          placeholder="Ceritakan destinasi impian Anda atau tanyakan tentang paket wisata kami..."
                         />
                       </Form.Group>
                     </Col>
@@ -115,10 +119,12 @@ const Contact = () => {
                       <Geo size={32} />
                     </div>
                     <div>
-                      <h4 className="mb-2">Kantor</h4>
+                      <h4 className="mb-2">Kantor Pusat</h4>
                       <hr className="w-50 mb-3 border-dark-subtle" />
                       <address className="m-0 text-secondary">
-                        Jakarta, Indonesia
+                        Jl. Sudirman No. 123<br />
+                        Jakarta Pusat, DKI Jakarta 10220<br />
+                        Indonesia
                       </address>
                     </div>
                   </div>
@@ -129,10 +135,13 @@ const Contact = () => {
                           <TelephoneOutbound size={32} />
                         </div>
                         <div>
-                          <h4 className="mb-2">No. Telepon</h4>
+                          <h4 className="mb-2">Customer Service</h4>
                           <hr className="w-50 my-3 border-dark-subtle" />
                           <p className="mb-0 text-secondary">
-                            +62 1234 5678 9101
+                            +62 21 1234 5678
+                          </p>
+                          <p className="mb-0 text-secondary">
+                            +62 851 1171 1281 (WhatsApp)
                           </p>
                         </div>
                       </div>
@@ -146,7 +155,10 @@ const Contact = () => {
                           <h4 className="mb-2">Email</h4>
                           <hr className="w-50 my-3 border-dark-subtle" />
                           <p className="mb-0 text-secondary">
-                            pharmora.id@help.com
+                            info@mataelangtravel.com
+                          </p>
+                          <p className="mb-0 text-secondary">
+                            booking@mataelangtravel.com
                           </p>
                         </div>
                       </div>
@@ -157,12 +169,17 @@ const Contact = () => {
                       <ClockHistory size={32} />
                     </div>
                     <div>
-                      <h4 className="mb-2">Jam Kerja</h4>
+                      <h4 className="mb-2">Jam Operasional</h4>
                       <hr className="w-50 my-3 border-dark-subtle" />
                       <p className="mb-2 text-secondary">
-                        Sen - Jum: 9:00 - 17:00
+                        Senin - Jumat: 08:00 - 18:00 WIB
                       </p>
-                      <p className="m-0 text-secondary">Sab - Min: Tutup</p>
+                      <p className="mb-2 text-secondary">
+                        Sabtu: 08:00 - 15:00 WIB
+                      </p>
+                      <p className="m-0 text-secondary">
+                        Minggu & Hari Libur: 24/7 Emergency Support
+                      </p>
                     </div>
                   </div>
                 </Col>
