@@ -1,8 +1,8 @@
 import React from "react";
 import { Container, Row, Col, Image, Card } from "react-bootstrap";
 import { StarFill, Star } from "react-bootstrap-icons";
-import about01 from "../../assets/img/about01.png";
-import about02 from "../../assets/img/about02.png";
+import about01 from "../../assets/img/about01.jpg";
+import about02 from "../../assets/img/about02.jpg";
 import testimonials01 from "../../assets/img/testimonial-img-1.png";
 import testimonials02 from "../../assets/img/testimonial-img-2.png";
 import testimonials03 from "../../assets/img/testimonial-img-3.png";
