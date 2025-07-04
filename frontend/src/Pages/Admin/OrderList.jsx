@@ -95,19 +95,46 @@ const OrderListPage = () => {
           {selectedOrder && (
             <>
               <Row>
-                <Col>
+                <Col md={6}>
                   <h5>Transaction ID: {selectedOrder.transactionId}</h5>
                   <h5>Order Date: {new Date(selectedOrder.createdAt).toLocaleDateString()}</h5>
                   <h5>Total Amount: {new Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
                   }).format(selectedOrder.total)}</h5>
-                  <h5>Address: {selectedOrder.address}</h5>
+                  <h5>Delivery Address: {selectedOrder.address}</h5>
                 </Col>
-                <Col className="text-right">
-                  <h5>User: {selectedOrder.user?.username || 'Unknown User'}</h5>
+                <Col md={6}>
+                  <h5>Customer: {selectedOrder.user?.username || 'Unknown User'}</h5>
+                  <h5>Phone: {selectedOrder.user?.phone || 'No phone number'}</h5>
                   <h5>Payment Method: {selectedOrder.midtransStatus?.payment_type || 'Pending'}</h5>
-                  <h5>Payment Status: {selectedOrder.midtransStatus?.transaction_status || 'Pending'}</h5>
+                  <h5>Payment Status: 
+                    <span className={`badge ms-2 ${
+                      selectedOrder.midtransStatus?.transaction_status === 'settlement' || 
+                      selectedOrder.midtransStatus?.transaction_status === 'capture' ? 'bg-success' :
+                      selectedOrder.midtransStatus?.transaction_status === 'pending' ? 'bg-warning' :
+                      selectedOrder.midtransStatus?.transaction_status === 'cancel' ||
+                      selectedOrder.midtransStatus?.transaction_status === 'deny' ||
+                      selectedOrder.midtransStatus?.transaction_status === 'expire' ? 'bg-danger' :
+                      'bg-secondary'
+                    }`}>
+                      {selectedOrder.midtransStatus?.transaction_status || 'Pending'}
+                    </span>
+                  </h5>
+                  <h5>Order Status: 
+                    <span className={`badge ms-2 ${
+                      selectedOrder.status === 'Successful' ? 'bg-success' :
+                      selectedOrder.status === 'Pending' ? 'bg-warning' :
+                      selectedOrder.status === 'Cancelled' ? 'bg-danger' :
+                      selectedOrder.status === 'Failed' ? 'bg-danger' :
+                      'bg-secondary'
+                    }`}>
+                      {selectedOrder.status}
+                    </span>
+                  </h5>
+                  {selectedOrder.midtransStatus?.settlement_time && (
+                    <h5>Settlement Time: {new Date(selectedOrder.midtransStatus.settlement_time).toLocaleString()}</h5>
+                  )}
                 </Col>
               </Row>
               <hr />
@@ -138,12 +165,58 @@ const OrderListPage = () => {
                         {new Intl.NumberFormat('id-ID', {
                           style: 'currency',
                           currency: 'IDR',
-                        }).format(item.product?.price * item.quantity || 0)}
+                        }).format((item.product?.price || 0) * item.quantity)}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </Table>
+              
+              {/* Additional Payment Information */}
+              {selectedOrder.midtransStatus && (
+                <>
+                  <hr />
+                  <h5>Payment Information:</h5>
+                  <Row>
+                    <Col md={6}>
+                      {selectedOrder.midtransStatus.bank && (
+                        <p><strong>Bank:</strong> {selectedOrder.midtransStatus.bank}</p>
+                      )}
+                      {selectedOrder.midtransStatus.va_numbers && selectedOrder.midtransStatus.va_numbers.length > 0 && (
+                        <p><strong>VA Number:</strong> {selectedOrder.midtransStatus.va_numbers[0].va_number}</p>
+                      )}
+                      {selectedOrder.midtransStatus.bill_key && (
+                        <p><strong>Bill Key:</strong> {selectedOrder.midtransStatus.bill_key}</p>
+                      )}
+                      {selectedOrder.midtransStatus.biller_code && (
+                        <p><strong>Biller Code:</strong> {selectedOrder.midtransStatus.biller_code}</p>
+                      )}
+                    </Col>
+                    <Col md={6}>
+                      {selectedOrder.midtransStatus.gross_amount && (
+                        <p><strong>Gross Amount:</strong> {new Intl.NumberFormat('id-ID', {
+                          style: 'currency',
+                          currency: 'IDR',
+                        }).format(selectedOrder.midtransStatus.gross_amount)}</p>
+                      )}
+                      {selectedOrder.midtransStatus.transaction_time && (
+                        <p><strong>Transaction Time:</strong> {new Date(selectedOrder.midtransStatus.transaction_time).toLocaleString()}</p>
+                      )}
+                      {selectedOrder.midtransStatus.fraud_status && (
+                        <p><strong>Fraud Status:</strong> 
+                          <span className={`badge ms-2 ${
+                            selectedOrder.midtransStatus.fraud_status === 'accept' ? 'bg-success' :
+                            selectedOrder.midtransStatus.fraud_status === 'challenge' ? 'bg-warning' :
+                            'bg-danger'
+                          }`}>
+                            {selectedOrder.midtransStatus.fraud_status}
+                          </span>
+                        </p>
+                      )}
+                    </Col>
+                  </Row>
+                </>
+              )}
             </>
           )}
         </Modal.Body>
