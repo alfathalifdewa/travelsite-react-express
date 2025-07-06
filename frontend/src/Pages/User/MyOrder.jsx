@@ -74,32 +74,6 @@ const MyOrder = () => {
           </Breadcrumb>
         </Row>
 
-<<<<<<< HEAD
-        {Object.keys(orders).map(date => (
-          <div key={date} className="mb-4">
-            <h5 className="text-primary">Orders on {date}</h5>
-            {orders[date].map(order => (
-              <Row className="mt-3" key={order._id}>
-                <Col md={12}>
-                  <Card>
-                    <Card.Body>
-                      <Card.Title>Order ID: {order._id}</Card.Title>
-                      <ListGroup variant="flush">
-                        {order.items.map(item => (
-                          <ListGroup.Item key={item._id}>
-                            <Row>
-
-                              <Col md={2}>
-                                <img src={item.product.image} className= "detail-product-image" alt={item.product.image} />
-                              </Col>
-                              <Col md={6}>{item.product?.productName ?? "-"}</Col>
-                              <Col md={2}>Rp {item.product?.price?.toLocaleString?.() ?? "-"}</Col>
-                              <Col md={2}>x {item.quantity}</Col>
-                            </Row>
-                          </ListGroup.Item>
-                        ))}
-                      </ListGroup>
-=======
         {Object.keys(orders).length === 0 ? (
           <Row className="mt-4">
             <Col md={12}>
@@ -151,7 +125,6 @@ const MyOrder = () => {
                             </ListGroup.Item>
                           ))}
                         </ListGroup>
->>>>>>> 06a048d28907c07dee4274588d9b6eec8059a624
 
                         <div className="mt-3">
                           <strong>Total: Rp {order.total.toLocaleString()}</strong>
@@ -179,40 +152,26 @@ const MyOrder = () => {
                                     <ListGroup variant="flush">
                                       <ListGroup.Item>
                                         <Row>
-<<<<<<< HEAD
-                                          <Col><b>Nama : </b></Col>
-                                          <Col>{selectedOrder.user?.username  || 'Unknown User'}</Col>
+                                          <Col sm={4}><strong>Nama:</strong></Col>
+                                          <Col sm={8}>{selectedOrderDetails[order.transactionId].user?.username || 'Unknown User'}</Col>
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col><b>Alamat : </b></Col>
-                                          <Col>{selectedOrder.address}</Col>
-=======
-                                          <Col sm={4}><strong>Address:</strong></Col>
+                                          <Col sm={4}><strong>Alamat:</strong></Col>
                                           <Col sm={8}>{selectedOrderDetails[order.transactionId].address}</Col>
->>>>>>> 06a048d28907c07dee4274588d9b6eec8059a624
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-<<<<<<< HEAD
-                                          <Col><b>Payment Method : </b></Col>
-                                          <Col>{selectedOrder.midtransStatus?.payment_type || 'Pending'}</Col>
-=======
                                           <Col sm={4}><strong>Payment Method:</strong></Col>
                                           <Col sm={8}>
                                             {selectedOrderDetails[order.transactionId].midtransStatus?.payment_type || 'Pending'}
                                           </Col>
->>>>>>> 06a048d28907c07dee4274588d9b6eec8059a624
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-<<<<<<< HEAD
-                                          <Col><b>Payment Status : </b></Col>
-                                          <Col>{selectedOrder.midtransStatus?.transaction_status || 'Pending'}</Col>
-=======
                                           <Col sm={4}><strong>Payment Status:</strong></Col>
                                           <Col sm={8}>
                                             <span className={`badge ${
@@ -223,16 +182,11 @@ const MyOrder = () => {
                                               {selectedOrderDetails[order.transactionId].midtransStatus?.transaction_status || 'Pending'}
                                             </span>
                                           </Col>
->>>>>>> 06a048d28907c07dee4274588d9b6eec8059a624
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-<<<<<<< HEAD
-                                          <Col><b>Total Pembayaran : </b></Col>
-                                          <Col>Rp {selectedOrder.total.toLocaleString()}</Col>
-=======
-                                          <Col sm={4}><strong>Total Payment:</strong></Col>
+                                          <Col sm={4}><strong>Total Pembayaran:</strong></Col>
                                           <Col sm={8}>
                                             <strong>Rp {selectedOrderDetails[order.transactionId].total.toLocaleString()}</strong>
                                           </Col>
@@ -244,12 +198,13 @@ const MyOrder = () => {
                                           <Col sm={8}>
                                             {new Date(selectedOrderDetails[order.transactionId].createdAt).toLocaleString()}
                                           </Col>
->>>>>>> 06a048d28907c07dee4274588d9b6eec8059a624
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col><b>Pemberitahuan :</b> Jika Sudah Melakukan Pemesanan/Transaksi Harapan Hubungi Kontak atau Sosial Media Kami, Agar Pemesanan Dapat Cepat di Proses Oleh Admin Terima Kasih Hormat Kami Travel Mata Elang.</Col>
+                                          <Col>
+                                            <strong>Pemberitahuan:</strong> Jika Sudah Melakukan Pemesanan/Transaksi Harapan Hubungi Kontak atau Sosial Media Kami, Agar Pemesanan Dapat Cepat di Proses Oleh Admin Terima Kasih Hormat Kami Travel Mata Elang.
+                                          </Col>
                                         </Row>
                                       </ListGroup.Item>
                                     </ListGroup>

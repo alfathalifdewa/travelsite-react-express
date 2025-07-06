@@ -40,6 +40,29 @@ const OrderListPage = () => {
     setShowModal(true);
   };
 
+  const getPaymentStatusBadge = (status) => {
+    const statusLower = status?.toLowerCase();
+    if (statusLower === 'settlement' || statusLower === 'capture') return 'bg-success';
+    if (statusLower === 'pending') return 'bg-warning';
+    if (statusLower === 'cancel' || statusLower === 'deny' || statusLower === 'expire') return 'bg-danger';
+    return 'bg-secondary';
+  };
+
+  const getOrderStatusBadge = (status) => {
+    const statusLower = status?.toLowerCase();
+    if (statusLower === 'successful') return 'bg-success';
+    if (statusLower === 'pending') return 'bg-warning';
+    if (statusLower === 'cancelled' || statusLower === 'failed') return 'bg-danger';
+    return 'bg-secondary';
+  };
+
+  const getFraudStatusBadge = (status) => {
+    const statusLower = status?.toLowerCase();
+    if (statusLower === 'accept') return 'bg-success';
+    if (statusLower === 'challenge') return 'bg-warning';
+    return 'bg-danger';
+  };
+
   return (
     <>
       <HeaderDashboard />
@@ -55,6 +78,7 @@ const OrderListPage = () => {
               <th>Tanggal Order</th>
               <th>Total Harga</th>
               <th>Nama</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -71,6 +95,11 @@ const OrderListPage = () => {
                   }).format(order.total)}
                 </td>
                 <td>{order.user?.username || 'Unknown User'}</td>
+                <td>
+                  <span className={`badge ${getOrderStatusBadge(order.status)}`}>
+                    {order.status || 'Pending'}
+                  </span>
+                </td>
                 <td>
                   <Button
                     variant="info"
@@ -95,64 +124,33 @@ const OrderListPage = () => {
           {selectedOrder && (
             <>
               <Row>
-<<<<<<< HEAD
-                <Col>
-                  <h5>Transaction ID : {selectedOrder.transactionId}</h5>
-                  <h5>Nama : {selectedOrder.user?.username || 'Unknown User'}</h5>
-                  <h5>Alamat : {selectedOrder.address}</h5>
-                  <h5> Nomor Telpon : {selectedOrder.phone} </h5>
-                  <h5> Email : {selectedOrder.email} </h5>
-                </Col>
-                <Col className="text-right">
-                  <h5>Order Date : {new Date(selectedOrder.createdAt).toLocaleDateString()}</h5>
-                  <h5>Payment Method : {selectedOrder.midtransStatus?.payment_type || 'Pending'}</h5>
-                  <h5>Payment Status : {selectedOrder.midtransStatus?.transaction_status || 'Pending'}</h5>
-                  <h5>Total Harga : {new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                  }).format(selectedOrder.total)}</h5>
-=======
                 <Col md={6}>
                   <h5>Transaction ID: {selectedOrder.transactionId}</h5>
-                  <h5>Order Date: {new Date(selectedOrder.createdAt).toLocaleDateString()}</h5>
-                  <h5>Total Amount: {new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                  }).format(selectedOrder.total)}</h5>
-                  <h5>Delivery Address: {selectedOrder.address}</h5>
+                  <h5>Nama: {selectedOrder.user?.username || 'Unknown User'}</h5>
+                  <h5>Alamat: {selectedOrder.address}</h5>
+                  <h5>Nomor Telpon: {selectedOrder.phone}</h5>
+                  <h5>Email: {selectedOrder.email}</h5>
                 </Col>
                 <Col md={6}>
-                  <h5>Customer: {selectedOrder.user?.username || 'Unknown User'}</h5>
-                  <h5>Phone: {selectedOrder.user?.phone || 'No phone number'}</h5>
+                  <h5>Order Date: {new Date(selectedOrder.createdAt).toLocaleDateString()}</h5>
                   <h5>Payment Method: {selectedOrder.midtransStatus?.payment_type || 'Pending'}</h5>
                   <h5>Payment Status: 
-                    <span className={`badge ms-2 ${
-                      selectedOrder.midtransStatus?.transaction_status === 'settlement' || 
-                      selectedOrder.midtransStatus?.transaction_status === 'capture' ? 'bg-success' :
-                      selectedOrder.midtransStatus?.transaction_status === 'pending' ? 'bg-warning' :
-                      selectedOrder.midtransStatus?.transaction_status === 'cancel' ||
-                      selectedOrder.midtransStatus?.transaction_status === 'deny' ||
-                      selectedOrder.midtransStatus?.transaction_status === 'expire' ? 'bg-danger' :
-                      'bg-secondary'
-                    }`}>
+                    <span className={`badge ms-2 ${getPaymentStatusBadge(selectedOrder.midtransStatus?.transaction_status)}`}>
                       {selectedOrder.midtransStatus?.transaction_status || 'Pending'}
                     </span>
                   </h5>
                   <h5>Order Status: 
-                    <span className={`badge ms-2 ${
-                      selectedOrder.status === 'Successful' ? 'bg-success' :
-                      selectedOrder.status === 'Pending' ? 'bg-warning' :
-                      selectedOrder.status === 'Cancelled' ? 'bg-danger' :
-                      selectedOrder.status === 'Failed' ? 'bg-danger' :
-                      'bg-secondary'
-                    }`}>
-                      {selectedOrder.status}
+                    <span className={`badge ms-2 ${getOrderStatusBadge(selectedOrder.status)}`}>
+                      {selectedOrder.status || 'Pending'}
                     </span>
                   </h5>
+                  <h5>Total Harga: {new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                  }).format(selectedOrder.total)}</h5>
                   {selectedOrder.midtransStatus?.settlement_time && (
                     <h5>Settlement Time: {new Date(selectedOrder.midtransStatus.settlement_time).toLocaleString()}</h5>
                   )}
->>>>>>> 06a048d28907c07dee4274588d9b6eec8059a624
                 </Col>
               </Row>
               <hr />
@@ -168,7 +166,7 @@ const OrderListPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedOrder.items.map((item, idx) => (
+                  {selectedOrder.items?.map((item, idx) => (
                     <tr key={idx}>
                       <td>{idx + 1}</td>
                       <td>{item.product?.productName || 'Unknown Product'}</td>
@@ -222,11 +220,7 @@ const OrderListPage = () => {
                       )}
                       {selectedOrder.midtransStatus.fraud_status && (
                         <p><strong>Fraud Status:</strong> 
-                          <span className={`badge ms-2 ${
-                            selectedOrder.midtransStatus.fraud_status === 'accept' ? 'bg-success' :
-                            selectedOrder.midtransStatus.fraud_status === 'challenge' ? 'bg-warning' :
-                            'bg-danger'
-                          }`}>
+                          <span className={`badge ms-2 ${getFraudStatusBadge(selectedOrder.midtransStatus.fraud_status)}`}>
                             {selectedOrder.midtransStatus.fraud_status}
                           </span>
                         </p>
