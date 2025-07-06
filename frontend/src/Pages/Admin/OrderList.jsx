@@ -139,11 +139,11 @@ const OrderListPage = () => {
                       {selectedOrder.midtransStatus?.transaction_status || 'Pending'}
                     </span>
                   </h5>
-                  <h5>Order Status: 
+                  {/* <h5>Order Status: 
                     <span className={`badge ms-2 ${getOrderStatusBadge(selectedOrder.status)}`}>
                       {selectedOrder.status || 'Pending'}
                     </span>
-                  </h5>
+                  </h5> */}
                   <h5>Total Harga: {new Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
