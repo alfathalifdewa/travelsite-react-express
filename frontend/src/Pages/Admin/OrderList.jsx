@@ -191,8 +191,8 @@ const OrderListPage = () => {
               {/* Additional Payment Information */}
               {selectedOrder.midtransStatus && (
                 <>
-                  <hr />
-                  <h5>Payment Information:</h5>
+                  {/* <hr /> */}
+                  {/* <h5>Payment Information:</h5>
                   <Row>
                     <Col md={6}>
                       {selectedOrder.midtransStatus.bank && (
@@ -226,7 +226,7 @@ const OrderListPage = () => {
                         </p>
                       )}
                     </Col>
-                  </Row>
+                  </Row> */}
                 </>
               )}
             </>

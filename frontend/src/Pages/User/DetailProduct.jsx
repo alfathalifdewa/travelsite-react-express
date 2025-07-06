@@ -190,17 +190,17 @@ const DetailProduct = () => {
       {/* Login Warning Modal */}
       <Modal show={showLoginWarning} onHide={handleCloseLoginWarning} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Login Required</Modal.Title>
+          <Modal.Title>Diperlukan Login untuk Pemesanan</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          You need to log in to add items to your cart. Would you like to go to the login page?
+          Anda harus daftar akun untuk menambahkan item ke keranjang Anda. Masuk kehalaman login untuk registrasi?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseLoginWarning}>
-            Cancel
+            Batal
           </Button>
           <Button variant="primary" onClick={handleGoToLogin}>
-            Go to Login
+            Lanjut Daftar
           </Button>
         </Modal.Footer>
       </Modal>
