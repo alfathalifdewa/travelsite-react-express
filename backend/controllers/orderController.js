@@ -222,7 +222,7 @@ export const getOrderById = async (req, res) => {
     const { orderId } = req.params;
 
     try {
-        const order = await Order.findOne({ transactionId: orderId }).populate('user', 'username').populate('items.product');
+        const order = await Order.findOne({ transactionId: orderId }).populate('user', 'username phone').populate('items.product');
         
         if (!order) {
             return res.status(404).json({ msg: 'Order not found' });
