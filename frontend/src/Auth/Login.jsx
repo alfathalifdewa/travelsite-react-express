@@ -59,10 +59,10 @@ const Login = () => {
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleLogin}>
           <Form.Group controlId="formBasicUsername">
-            <Form.Label>Username</Form.Label>
+            <Form.Label>Nama Lengkap</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter username"
+              placeholder="Gunakan nama saat registrasi"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="mb-2"
@@ -93,7 +93,7 @@ const Login = () => {
 
           <div className="d-flex justify-content-between mt-3">
             <Button variant="primary" type="submit">
-              Login
+              Masuk
             </Button>
             <Button variant="link" as={Link} to="/forgot-password">
               Forgot Password?
@@ -101,9 +101,9 @@ const Login = () => {
           </div>
         </Form>
         <div className="mt-3 text-center">
-          Don't have an account?
+          Sudah memiliki akun?
           <Button variant="link" as={Link} to="/register">
-            Register
+            Klik Daftar
           </Button>
         </div>
       </Card>

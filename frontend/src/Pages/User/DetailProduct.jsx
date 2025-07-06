@@ -97,7 +97,7 @@ const DetailProduct = () => {
     // Display up to 5 images
     const imagesToShow = product.images.slice(0, 5);
 
-    if (imagesToShow.length === 1) {
+    if (imagesToShow.length === 1 ) {
       return (
         <Image 
           src={imagesToShow[0]} 
@@ -169,7 +169,7 @@ const DetailProduct = () => {
               </div>
               <hr />
               <div className="product-deskripsi">
-                <h3>Deskripsi</h3>
+                <h3><b>Deskripsi</b></h3>
                 {product.desc ? (
                   product.desc.split('\n').map((line, index) => (
                     <p key={index}>{line}</p>

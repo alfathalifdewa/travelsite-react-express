@@ -61,7 +61,7 @@ const Header = () => {
                   className="d-inline-block align-top me-3"
                 />
                 <h3 className="fw-bold">
-                  Pharmora<span>.id</span>
+                  MATA<span>ELANG</span>
                 </h3>
               </Offcanvas.Title>
             </Offcanvas.Header>
@@ -90,7 +90,7 @@ const Header = () => {
                     <Dropdown.Item as={Link} to="/user-profile">Profil Saya</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/my-order">Data Order</Dropdown.Item> {/* Tambahkan link ke Order List */}
                     <Dropdown.Divider />
-                    <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                    <Dropdown.Item onClick={handleLogout}>Keluar</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               ) : (

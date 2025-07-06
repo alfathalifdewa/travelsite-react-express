@@ -72,7 +72,7 @@ function UserProfilePage() {
               <Row className="mb-3">
                 <Col md={6} className="mb-3">
                   <Form.Group controlId="username">
-                    <Form.Label className="fw-semibold">Username</Form.Label>
+                    <Form.Label className="fw-semibold">Nama</Form.Label>
                     {editMode ? (
                       <Form.Control
                         type="text"
@@ -89,7 +89,7 @@ function UserProfilePage() {
                 </Col>
                 <Col md={6} className="mb-3">
                   <Form.Group controlId="email">
-                    <Form.Label className="fw-semibold">Email Address</Form.Label>
+                    <Form.Label className="fw-semibold">Email</Form.Label>
                     {editMode ? (
                       <Form.Control
                         type="email"
@@ -106,7 +106,7 @@ function UserProfilePage() {
                 </Col>
                 <Col md={6} className="mb-3">
                   <Form.Group controlId="phoneNumber">
-                    <Form.Label className="fw-semibold">Phone Number</Form.Label>
+                    <Form.Label className="fw-semibold">Nomor Telpon</Form.Label>
                     {editMode ? (
                       <Form.Control
                         type="tel"
@@ -126,7 +126,7 @@ function UserProfilePage() {
                 </Col>
                 <Col md={6} className="mb-3">
                   <Form.Group controlId="address">
-                    <Form.Label className="fw-semibold">Address</Form.Label>
+                    <Form.Label className="fw-semibold">Alamat</Form.Label>
                     {editMode ? (
                       <Form.Control
                         type="text"

@@ -18,7 +18,7 @@ const Footer = () => {
         <section className="d-flex justify-content-between align-items-center p-4 mb-0 border-bottom">
           <div className="me-5 d-none d-lg-block">
             <span>
-              <h6>Connect with us on social media:</h6>
+              <h6>Hubungi Sosial Media Kami :</h6>
             </span>
           </div>
 
@@ -52,9 +52,8 @@ const Footer = () => {
         <Row className="mt-5 mb-5">
           <Col md="3" lg="4" xl="3" className="mx-auto mb-4 ">
             <h6 className="text-uppercase fw-bold mb-4">MATA ELANG</h6>
-            <p>
-              Mata Elang is your trusted partner in creating unforgettable
-              travel experiences, connecting you to the beauty of the world.
+            <p align="left">
+             Mata Elang Travel adalah agen perjalanan wisata yang berpengalaman dalam menghadirkan petualangan tak terlupakan ke berbagai destinasi eksotis di Indonesia dan dunia.
             </p>
           </Col>
 
@@ -62,16 +61,16 @@ const Footer = () => {
             <h6 className="text-uppercase fw-bold mb-4">Quick Links</h6>
             <p>
               <Link as={Link} to="/about-us" className="text-reset">
-                About Us
+                Tentang Kami
               </Link>
             </p>
             <p>
               <Link as={Link} to="/contact" className="text-reset">
-                Contact Us
+                Kontak
               </Link>
             </p>
             <p>
-              <Link as={Link} to="/destinations" className="text-reset">
+              <Link as={Link} to="https://daftartour.co.id/wp-content/uploads/pulau-pramuka-kepulauan-seribu-jakarta.jpeg" className="text-reset">
                 Destinations
               </Link>
             </p>
@@ -83,7 +82,7 @@ const Footer = () => {
           </Col>
 
           <Col md="4" lg="3" xl="3" className="mx-auto mb-md-0 mb-4">
-            <h6 className="text-uppercase fw-bold mb-4">Contact</h6>
+            <h6 className="text-uppercase fw-bold mb-4">Kontak</h6>
             <p>
               <House color="white" className="me-3" />
               Jakarta, Indonesia
@@ -146,9 +145,9 @@ const Footer = () => {
       </Container>
 
       <div className="text-center p-4 border-top">
-        © 2024 Copyright:
+        TRAVEL :
         <Link as={Link} to="/" className="text-reset fw-bold ms-2">
-          Mata Elang
+          MATA ELANG
         </Link>
       </div>
     </footer>

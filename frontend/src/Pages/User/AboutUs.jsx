@@ -48,7 +48,7 @@ const About = () => {
               <Row className="d-flex justify-content-center align-items-center h-100">
                 <Col className="text-white">
                   <h1 className="mb-3">
-                    Jelajahi Keindahan Indonesia Bersama Mata Elang Travel
+                    <b>JELAJAHI KEINDAHAN PULAU PRMAUKA BERSAMA TRAVEL MATA ELANG</b>
                   </h1>
                   <h4 className="mb-3">
                     Mata Elang Travel adalah partner perjalanan terpercaya untuk 
@@ -70,7 +70,7 @@ const About = () => {
               <Row className="justify-content-xl-center">
                 <Col xs={12} xl={11}>
                   <h3 className="fs-4 mb-3 text-secondary text-uppercase">
-                    Tentang Mata Elang Travel
+                    <b>Tentang Mata Elang Travel</b>
                   </h3>
                   <p className="lead fs-4 mb-3">
                     Mata Elang Travel adalah agen perjalanan wisata yang berpengalaman 

@@ -146,7 +146,7 @@ const Footer = () => {
       </Container>
 
       <div className="text-center p-4 border-top">
-        © 2024 Copyright:
+        MATA ELANG:
         <Link as={Link} to="/" className="text-reset fw-bold ms-2">
           Pharmora.id
         </Link>

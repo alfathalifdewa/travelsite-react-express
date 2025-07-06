@@ -17,7 +17,7 @@ function HeaderDashboard() {
         <Navbar.Toggle aria-controls={`offcanvasNavbarLabel-expand-lg`} />
         <Navbar.Brand as={Link} to="/dashboard" className="d-flex align-items-center">
           <h1 className="fw-bold">
-            Pharmora<span>.id</span>
+            MATA<span>ELANG</span>
           </h1>
         </Navbar.Brand>
         <Navbar.Offcanvas
@@ -32,7 +32,7 @@ function HeaderDashboard() {
               className="d-flex align-items-center"
             >
               <h3 className="fw-bold">
-                Pharmora<span style={{ color: "rgba(226,23,70,0.8)" }}>.id</span>
+                MATA<span style={{ color: "rgba(226,23,70,0.8)" }}>ELANG</span>
               </h3>
             </Offcanvas.Title>
           </Offcanvas.Header>
@@ -45,13 +45,13 @@ function HeaderDashboard() {
                 User List
               </Nav.Link>
               <Nav.Link as={Link} to="/dashboard/product-list">
-                Product List
+                Produk 
               </Nav.Link>
               <Nav.Link as={Link} to="/dashboard/category-list">
-                Category List
+                Katagory
               </Nav.Link>
               <Nav.Link as={Link} to="/dashboard/order-list">
-                Order List
+                Orderan
               </Nav.Link>
             </Nav>
           </Offcanvas.Body>

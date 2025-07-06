@@ -73,7 +73,7 @@ const Cart = () => {
   // Checkout with Midtrans popup
   const handleCheckout = async () => {
     if (!address.trim()) {
-      setError('Alamat pengiriman harus diisi');
+      setError('Alamat harus diisi');
       return;
     }
 
@@ -204,7 +204,7 @@ const Cart = () => {
                 {/* Address Selection */}
                 <Form className="mb-4">
                   <Form.Group controlId="addressSelect">
-                    <Form.Label>Alamat Pengiriman</Form.Label>
+                    <Form.Label>Masukkan Alamat</Form.Label>
                     <Form.Control
                       as="select"
                       value={address === userAddress ? userAddress : 'custom'}
@@ -325,7 +325,7 @@ const Cart = () => {
                     <span>Rp {totalOrder.toLocaleString()}</span>
                   </ListGroup.Item>
                   <ListGroup.Item className="d-flex justify-content-between">
-                    <span>Biaya Pengiriman</span>
+                    <span>Biaya Admin</span>
                     <span className="text-success">GRATIS</span>
                   </ListGroup.Item>
                   <ListGroup.Item className="d-flex justify-content-between">
@@ -359,7 +359,7 @@ const Cart = () => {
                 
                 <div className="mt-3 text-center">
                   <small className="text-muted">
-                    Dengan melanjutkan, Anda menyetujui syarat dan ketentuan kami
+                    MInimal Pemesanan H-2 Hari Sebelum Keberangkatan, Karena untuk Saat ini Tidak Ada Fitur Jadwal Keberangkatan, Mohon Kerja Samanya Hormat Kami TRAVEL MATA ELANG Terimah Kasih.
                   </small>
                 </div>
               </Card.Body>

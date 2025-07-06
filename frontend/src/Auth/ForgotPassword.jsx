@@ -31,7 +31,7 @@ const ForgotPassword = () => {
     <Container className="forgot-password-container">
       <Container as={Link} to="/">
         <h1 className="fw-bold text-center fs-1">
-          Pharmora<span>.id</span>
+          MATA<span>ELANG</span>
         </h1>
       </Container>
 

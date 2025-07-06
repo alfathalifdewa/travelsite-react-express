@@ -58,7 +58,7 @@ const DashboardPage = () => {
                   </div>
                 ))}
                 <Button variant="primary" onClick={() => navigate('/dashboard/user-list')}>
-                  Show More
+                  Selengkapnya...
                 </Button>
               </Card.Body>
             </Card>
@@ -74,7 +74,7 @@ const DashboardPage = () => {
                   </div>
                 ))}
                 <Button variant="primary" onClick={() => navigate('/dashboard/product-list')}>
-                  Show More
+                  Selengkapnya...
                 </Button>
               </Card.Body>
             </Card>
@@ -90,7 +90,7 @@ const DashboardPage = () => {
                   </div>
                 ))}
                 <Button variant="primary" onClick={() => navigate('/dashboard/order-list')}>
-                  Show More
+                  Selengkapnya...
                 </Button>
               </Card.Body>
             </Card>

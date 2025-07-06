@@ -47,24 +47,24 @@ const Home = () => {
 
   const travelDestinations = [
     {
-      image: baliImage,
-      name: "Bali",
-      path: "https://www.hotels.com/go/indonesia/best-bali-viewpoints",
+      image: "https://storage.jakarta-tourism.go.id/public/articles/e2f65f7f-eaac-4a09-b01e-f5e3f55dd295.jpg",
+      name: "Pulau Pramuka",
+      path: "https://id.wikipedia.org/wiki/Pulau_Pramuka",
     },
     {
-      image: borobudurImage,
-      name: "Candi Borobudur",
-      path: "https://blog.tripcetera.com/id/candi-borobudur/",
+      image: "https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/p1/593/2025/01/12/pantaipasirperawan-1084375902.jpg",
+      name: "Pulau Pari",
+      path: "https://id.wikipedia.org/wiki/Pulau_Pari,_Kepulauan_Seribu_Selatan,_Kepulauan_Seribu",
     },
     {
       image: rajaAmpatImage,
-      name: "Raja Ampat",
-      path: "https://generationvoyage.fr/visiter-raja-ampat-faire-voir/",
+      name: "Pulau Harapan",
+      path: "https://id.wikipedia.org/wiki/Pulau_Harapan,_Kepulauan_Seribu_Utara,_Kepulauan_Seribu",
     },
     {
       image: labuanBajoImage,
-      name: "Labuan Bajo",
-      path: "https://windows10spotlight.com/images/30758",
+      name: "Labuan Tidung",
+      path: "https://id.wikipedia.org/wiki/Pulau_Tidung,_Kepulauan_Seribu_Selatan,_Kepulauan_Seribu",
     },
   ];
 
@@ -97,9 +97,9 @@ const Home = () => {
       <div className="banner-container mt-0">
         <img
           className="d-block w-100 banner-image"
-          src={mataElangBanner}
+          src={"https://p0.piqsels.com/preview/1017/523/650/4k-wallpaper-background-beautiful-beauty.jpg"}
           alt="Banner Image"
-          style={{ height: '400px', objectFit: 'cover' }}
+          style={{ height: '600px', objectFit: 'cover' }}
         />
       </div>
 
@@ -147,7 +147,7 @@ const Home = () => {
           <Col xs={12}>
             <Row className="align-items-center justify-content-between">
               <Col>
-                <h5>Destinasi Wisata Populer di Indonesia</h5>
+                <h5> Artikel Pulau Seribu</h5>
               </Col>
               <Col xs="auto">
                 <Button 
@@ -173,7 +173,7 @@ const Home = () => {
               {travelDestinations.map((item, index) => (
                 <div key={index} className="d-flex justify-content-center">
                   <Card className="diagnosis-card h-100 border-0">
-                    <a href={item.path} target="_blank" rel="noopener noreferrer">
+                    <a href={item.path} rel="noopener noreferrer">
                       <Card.Img variant="top" src={item.image} className="diagnosis-card-img" />
                       <Card.ImgOverlay className="d-flex flex-column justify-content-end">
                         <Card.Title className="diagnosis-name p-2">{item.name}</Card.Title>

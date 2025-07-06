@@ -76,8 +76,8 @@ const Cart = () => {
                             <Col md={2}>
                               <img src={product.product.image} className="img-fluid" alt={product.product.name} />
                             </Col>
-                            <Col md={6}>{product.product.productName}</Col>
-                            <Col md={2}>Rp {product.product.price.toLocaleString()}</Col>
+                            <Col md={6}>{product.product?.productName ?? '-'}</Col>
+                            <Col md={2}>Rp {product.product?.price?.toLocaleString?.() ?? "-"}</Col>
                             <Col md={2}>x {product.quantity}</Col>
                           </Row>
                         </ListGroup.Item>

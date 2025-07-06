@@ -306,7 +306,7 @@ const ProductList = () => {
             onClick={() => openModal()} 
             disabled={loading}
           >
-            Add New Product
+            + Produk Baru
           </Button>
         </div>
         
@@ -316,11 +316,11 @@ const ProductList = () => {
         <Table striped hover responsive className="mt-3">
           <thead className="table-dark">
             <tr>
-              <th>#</th>
-              <th>Images</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Price</th>
+              <th>No</th>
+              <th>Gambar</th>
+              <th>Nama</th>
+              <th>Katagory</th>
+              <th>Harga</th>
               <th>Actions</th>
             </tr>
           </thead>

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const OrderSchema = new mongoose.Schema({
     user: {
@@ -19,6 +20,8 @@ const OrderSchema = new mongoose.Schema({
     }],
     total: { type: Number, required: true },
     address: { type: String, required: true },
+    phone: { type: String},
+    email: {type: String},
     paymentLink: { type: String },
     transactionId: { type: String, unique: true },
     createdAt: { type: Date, default: Date.now }

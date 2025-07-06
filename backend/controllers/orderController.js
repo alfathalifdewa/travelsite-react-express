@@ -27,6 +27,7 @@ export const checkoutCart = async (req, res) => {
         });
 
         const orderId = `ORDER-${Date.now()}`;
+        const phone = req.user.phone || '+628123456789';
 
         // Midtrans transaction parameters
         const parameter = {
@@ -38,11 +39,11 @@ export const checkoutCart = async (req, res) => {
             customer_details: {
                 first_name: req.user.username,
                 email: req.user.email,
-                phone: req.user.phone || '+628123456789',
+                phone: phone,
                 billing_address: {
                     first_name: req.user.username,
                     email: req.user.email,
-                    phone: req.user.phone || '+628123456789',
+                    phone: phone,
                     address: address,
                     city: 'Jakarta',
                     postal_code: '12345',
@@ -51,7 +52,7 @@ export const checkoutCart = async (req, res) => {
                 shipping_address: {
                     first_name: req.user.username,
                     email: req.user.email,
-                    phone: req.user.phone || '+628123456789',
+                    phone: phone,
                     address: address,
                     city: 'Jakarta',
                     postal_code: '12345',
@@ -74,6 +75,8 @@ export const checkoutCart = async (req, res) => {
             items: cart.items,
             total,
             address,
+            phone: phone,
+            email: req.user.email,
             paymentLink: transaction.redirect_url,
             transactionId: orderId,
             status: 'Pending'
@@ -191,15 +194,21 @@ export const getOrder = async (req, res) => {
 
         const ordersWithImageUrls = orders.map(order => ({
             ...order._doc,
-            items: order.items.map(item => ({
-                ...item._doc,
-                product: {
-                    ...item.product._doc,
-                    image: item.product.image
-                        ? `${req.protocol}://${req.get('host')}${item.product.image}`
-                        : null
+            items: order.items.map(item => {
+                let product = item.product || {image: null};
+                if (item.product != null) {
+                    product = {
+                        ...item.product._doc,
+                        image: item.product.image
+                            ? `${req.protocol}://${req.get('host')}${item.product.image}`
+                            : null
+                    }
                 }
-            }))
+                return {
+                    ...item._doc,
+                    product: product
+                }
+            })
         }));
 
         res.json(ordersWithImageUrls);

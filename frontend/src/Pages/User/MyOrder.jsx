@@ -74,11 +74,12 @@ const MyOrder = () => {
                         {order.items.map(item => (
                           <ListGroup.Item key={item._id}>
                             <Row>
+
                               <Col md={2}>
-                                <img src={item.product.image} className="img-fluid" alt={item.product.productName} />
+                                <img src={item.product.image} className= "detail-product-image" alt={item.product.image} />
                               </Col>
-                              <Col md={6}>{item.product.productName}</Col>
-                              <Col md={2}>Rp {item.product.price.toLocaleString()}</Col>
+                              <Col md={6}>{item.product?.productName ?? "-"}</Col>
+                              <Col md={2}>Rp {item.product?.price?.toLocaleString?.() ?? "-"}</Col>
                               <Col md={2}>x {item.quantity}</Col>
                             </Row>
                           </ListGroup.Item>
@@ -99,26 +100,37 @@ const MyOrder = () => {
                                     <ListGroup variant="flush">
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col>Address:</Col>
+                                          <Col><b>Nama : </b></Col>
+                                          <Col>{selectedOrder.user?.username  || 'Unknown User'}</Col>
+                                        </Row>
+                                      </ListGroup.Item>
+                                      <ListGroup.Item>
+                                        <Row>
+                                          <Col><b>Alamat : </b></Col>
                                           <Col>{selectedOrder.address}</Col>
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col>Payment Method:</Col>
+                                          <Col><b>Payment Method : </b></Col>
                                           <Col>{selectedOrder.midtransStatus?.payment_type || 'Pending'}</Col>
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col>Payment Status:</Col>
+                                          <Col><b>Payment Status : </b></Col>
                                           <Col>{selectedOrder.midtransStatus?.transaction_status || 'Pending'}</Col>
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col>Total Payment:</Col>
+                                          <Col><b>Total Pembayaran : </b></Col>
                                           <Col>Rp {selectedOrder.total.toLocaleString()}</Col>
+                                        </Row>
+                                      </ListGroup.Item>
+                                      <ListGroup.Item>
+                                        <Row>
+                                          <Col><b>Pemberitahuan :</b> Jika Sudah Melakukan Pemesanan/Transaksi Harapan Hubungi Kontak atau Sosial Media Kami, Agar Pemesanan Dapat Cepat di Proses Oleh Admin Terima Kasih Hormat Kami Travel Mata Elang.</Col>
                                         </Row>
                                       </ListGroup.Item>
                                     </ListGroup>

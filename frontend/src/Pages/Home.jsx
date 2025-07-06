@@ -131,7 +131,7 @@ const Home = () => {
               alt="First slide"
             />
             <Carousel.Caption>
-              <h3>Pharmora.id</h3>
+              <h3>MATAELANG</h3>
               <p>
                 Pharmora.id adalah apotek online untuk solusi kesehatan yang
                 modern dan terpercaya.
@@ -159,7 +159,7 @@ const Home = () => {
               alt="Third slide"
             />
             <Carousel.Caption>
-              <h3>Pharmora.id</h3>
+              <h3>MATAELANG</h3>
               <p>
                 Pharmora.id adalah apotek online untuk solusi kesehatan yang
                 modern dan terpercaya.

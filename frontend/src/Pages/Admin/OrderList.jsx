@@ -50,11 +50,11 @@ const OrderListPage = () => {
         <Table striped bordered hover className="mt-3">
           <thead>
             <tr>
-              <th>#</th>
+              <th>No</th>
               <th>Transaction ID</th>
-              <th>Order Date</th>
-              <th>Total Amount</th>
-              <th>User</th>
+              <th>Tanggal Order</th>
+              <th>Total Harga</th>
+              <th>Nama</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -77,7 +77,7 @@ const OrderListPage = () => {
                     size="sm"
                     onClick={() => handleShowModal(order.transactionId)}
                   >
-                    View Details
+                    Lihat Selengkapnya
                   </Button>
                 </td>
               </tr>
@@ -96,18 +96,20 @@ const OrderListPage = () => {
             <>
               <Row>
                 <Col>
-                  <h5>Transaction ID: {selectedOrder.transactionId}</h5>
-                  <h5>Order Date: {new Date(selectedOrder.createdAt).toLocaleDateString()}</h5>
-                  <h5>Total Amount: {new Intl.NumberFormat('id-ID', {
+                  <h5>Transaction ID : {selectedOrder.transactionId}</h5>
+                  <h5>Nama : {selectedOrder.user?.username || 'Unknown User'}</h5>
+                  <h5>Alamat : {selectedOrder.address}</h5>
+                  <h5> Nomor Telpon : {selectedOrder.phone} </h5>
+                  <h5> Email : {selectedOrder.email} </h5>
+                </Col>
+                <Col className="text-right">
+                  <h5>Order Date : {new Date(selectedOrder.createdAt).toLocaleDateString()}</h5>
+                  <h5>Payment Method : {selectedOrder.midtransStatus?.payment_type || 'Pending'}</h5>
+                  <h5>Payment Status : {selectedOrder.midtransStatus?.transaction_status || 'Pending'}</h5>
+                  <h5>Total Harga : {new Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
                   }).format(selectedOrder.total)}</h5>
-                  <h5>Address: {selectedOrder.address}</h5>
-                </Col>
-                <Col className="text-right">
-                  <h5>User: {selectedOrder.user?.username || 'Unknown User'}</h5>
-                  <h5>Payment Method: {selectedOrder.midtransStatus?.payment_type || 'Pending'}</h5>
-                  <h5>Payment Status: {selectedOrder.midtransStatus?.transaction_status || 'Pending'}</h5>
                 </Col>
               </Row>
               <hr />
@@ -115,11 +117,11 @@ const OrderListPage = () => {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Product Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Subtotal</th>
+                    <th>No</th>
+                    <th>Nama Pesanan</th>
+                    <th>Harga</th>
+                    <th>Jumlah Pesanan</th>
+                    <th>Total</th>
                   </tr>
                 </thead>
                 <tbody>

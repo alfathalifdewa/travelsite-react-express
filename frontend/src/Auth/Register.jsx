@@ -40,10 +40,10 @@ const Register = () => {
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleRegister}>
           <Form.Group controlId="formBasicUsername">
-            <Form.Label>Username</Form.Label>
+            <Form.Label>Nama Lengkap</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter username"
+              placeholder="Masukkan Nama Lengkap"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="mb-2"
@@ -54,7 +54,7 @@ const Register = () => {
             <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
-              placeholder="Enter email"
+              placeholder="Masukkan Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="mb-2"
@@ -73,10 +73,10 @@ const Register = () => {
             />
           </Form.Group>
           <Form.Group controlId="formBasicPhoneNumber">
-            <Form.Label>Phone Number</Form.Label>
+            <Form.Label>Nomor Telpon Aktif</Form.Label>
             <Form.Control
               type="tel"
-              placeholder="Enter phone number"
+              placeholder="Masukkan Nomor Telpon terdaftar di WhatsApp"
               value={phone}
               onChange={(e) => setPhoneNumber(e.target.value)}
               className="mb-2"
@@ -84,10 +84,10 @@ const Register = () => {
             />
           </Form.Group>
           <Form.Group controlId="formBasicAddress"> {/* New address field */}
-            <Form.Label>Address</Form.Label>
+            <Form.Label>Alamat</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter address"
+              placeholder="Masukkan Alamat Lengkap"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               className="mb-2"
@@ -101,9 +101,9 @@ const Register = () => {
           </div>
         </Form>
         <div className="mt-3 text-center">
-          Already have an account?
+          Sudah memiliki akun?
           <Button variant="link" as={Link} to="/login">
-            Login
+            Masuk
           </Button>
         </div>
       </Card>

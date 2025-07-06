@@ -50,7 +50,7 @@ const Header = ({
                     height="40"
                     className="d-inline-block align-top"
                   />
-                  <span className="ms-2">Pharmora.id</span>
+                  <span className="ms-2">MATAELANG</span>
                 </Offcanvas.Title>
               </Offcanvas.Header>
               <Offcanvas.Body>

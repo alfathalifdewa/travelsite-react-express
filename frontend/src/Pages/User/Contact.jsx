@@ -17,8 +17,8 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const whatsappMessage = `Nama Lengkap: ${fullname}%0AEmail: ${email}%0ANo. Telepon: ${phone}%0APesan: ${message}`;
-    const whatsappURL = `https://api.whatsapp.com/send?phone=+6285111711281&text=${whatsappMessage}`;
+    const whatsappMessage = `Nama Lengkap: ${fullname}%0AEmail: ${email}%0ANomor Telepon: ${phone}%0APesan: ${message}`;
+    const whatsappURL = `https://api.whatsapp.com/send?phone=+6281584353432&text=${whatsappMessage}`;
     window.open(whatsappURL, "_blank");
   };
 
@@ -33,7 +33,7 @@ const Contact = () => {
           <Row>
             <Col xs={12} md={10} lg={8}>
               <h3 className="fs-4 mb-3 text-secondary text-uppercase">
-                Hubungi Mata Elang Travel
+                Masukkan Ulang Pesanan Anda Disini
               </h3>
             </Col>
           </Row>
@@ -72,10 +72,11 @@ const Contact = () => {
                           placeholder="contoh@email.com"
                         />
                       </Form.Group>
+
                     </Col>
                     <Col xs={12} md={6}>
                       <Form.Group controlId="phone">
-                        <Form.Label>No. Telepon</Form.Label>
+                        <Form.Label>Nomor Telepon</Form.Label>
                         <Form.Control
                           type="tel"
                           value={phone}
@@ -95,7 +96,7 @@ const Contact = () => {
                           required
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
-                          placeholder="Ceritakan destinasi impian Anda atau tanyakan tentang paket wisata kami..."
+                          placeholder="Masukkan Deskripsi Pesanan..."
                         />
                       </Form.Group>
                     </Col>
@@ -119,10 +120,10 @@ const Contact = () => {
                       <Geo size={32} />
                     </div>
                     <div>
-                      <h4 className="mb-2">Kantor Pusat</h4>
+                      <h4 className="mb-2">Kantor Kami</h4>
                       <hr className="w-50 mb-3 border-dark-subtle" />
                       <address className="m-0 text-secondary">
-                        Jl. Sudirman No. 123<br />
+                        Pulau Pramuka<br />
                         Jakarta Pusat, DKI Jakarta 10220<br />
                         Indonesia
                       </address>
@@ -169,7 +170,7 @@ const Contact = () => {
                       <ClockHistory size={32} />
                     </div>
                     <div>
-                      <h4 className="mb-2">Jam Operasional</h4>
+                      <h4 className="mb-2">Jam Operasional Kerja</h4>
                       <hr className="w-50 my-3 border-dark-subtle" />
                       <p className="mb-2 text-secondary">
                         Senin - Jumat: 08:00 - 18:00 WIB
