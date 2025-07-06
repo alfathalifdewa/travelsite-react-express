@@ -190,10 +190,10 @@ const DetailProduct = () => {
       {/* Login Warning Modal */}
       <Modal show={showLoginWarning} onHide={handleCloseLoginWarning} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Diperlukan Login untuk Pemesanan</Modal.Title>
+          <Modal.Title>Diperlukan Login</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Anda harus daftar akun untuk menambahkan item ke keranjang Anda. Masuk kehalaman login untuk registrasi?
+          Anda harus daftar akun untuk menambahkan pemesanan anda. Masuk kehalaman login untuk buat akun?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseLoginWarning}>
