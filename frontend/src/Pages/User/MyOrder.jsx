@@ -63,6 +63,12 @@ const MyOrder = () => {
     }
   };
 
+  // Helper function to safely format currency
+  const formatCurrency = (amount) => {
+    if (amount == null || isNaN(amount)) return '0';
+    return Number(amount).toLocaleString();
+  };
+
   return (
     <>
       <Header />
@@ -105,29 +111,29 @@ const MyOrder = () => {
                         }`}>{order.status}</span></p>
                         
                         <ListGroup variant="flush">
-                          {order.items.map(item => (
+                          {order.items && order.items.map(item => (
                             <ListGroup.Item key={item._id}>
                               <Row>
                                 <Col md={2}>
                                   <img 
-                                    src={item.product.image} 
+                                    src={item.product?.image || '/placeholder-image.jpg'} 
                                     className="img-fluid" 
-                                    alt={item.product.productName}
+                                    alt={item.product?.productName || 'Product'}
                                     style={{ maxHeight: '80px', objectFit: 'cover' }}
                                   />
                                 </Col>
                                 <Col md={6}>
-                                  <strong>{item.product.productName}</strong>
+                                  <strong>{item.product?.productName || 'Unknown Product'}</strong>
                                 </Col>
-                                <Col md={2}>Rp {item.product.price.toLocaleString()}</Col>
-                                <Col md={2}>x {item.quantity}</Col>
+                                <Col md={2}>Rp {formatCurrency(item.product?.price)}</Col>
+                                <Col md={2}>x {item.quantity || 0}</Col>
                               </Row>
                             </ListGroup.Item>
                           ))}
                         </ListGroup>
 
                         <div className="mt-3">
-                          <strong>Total: Rp {order.total.toLocaleString()}</strong>
+                          <strong>Total: Rp {formatCurrency(order.total)}</strong>
                         </div>
 
                         <Accordion className="mt-3">
@@ -159,7 +165,7 @@ const MyOrder = () => {
                                       <ListGroup.Item>
                                         <Row>
                                           <Col sm={4}><strong>Alamat:</strong></Col>
-                                          <Col sm={8}>{selectedOrderDetails[order.transactionId].address}</Col>
+                                          <Col sm={8}>{selectedOrderDetails[order.transactionId].address || 'No address provided'}</Col>
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
@@ -188,7 +194,7 @@ const MyOrder = () => {
                                         <Row>
                                           <Col sm={4}><strong>Total Pembayaran:</strong></Col>
                                           <Col sm={8}>
-                                            <strong>Rp {selectedOrderDetails[order.transactionId].total.toLocaleString()}</strong>
+                                            <strong>Rp {formatCurrency(selectedOrderDetails[order.transactionId].total)}</strong>
                                           </Col>
                                         </Row>
                                       </ListGroup.Item>
