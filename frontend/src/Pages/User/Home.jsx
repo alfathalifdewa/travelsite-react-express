@@ -47,7 +47,7 @@ const Home = () => {
 
   const travelDestinations = [
     {
-      image: "https://storage.jakarta-tourism.go.id/public/articles/e2f65f7f-eaac-4a09-b01e-f5e3f55dd295.jpg",
+      image: "https://pulauseribu.jakarta.go.id/img/877952.jpg",
       name: "Pulau Pramuka",
       path: "https://id.wikipedia.org/wiki/Pulau_Pramuka",
     },
@@ -57,14 +57,14 @@ const Home = () => {
       path: "https://id.wikipedia.org/wiki/Pulau_Pari,_Kepulauan_Seribu_Selatan,_Kepulauan_Seribu",
     },
     {
-      image: rajaAmpatImage,
+      image: "https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2023/02/03/3357793103.jpg",
       name: "Pulau Harapan",
       path: "https://id.wikipedia.org/wiki/Pulau_Harapan,_Kepulauan_Seribu_Utara,_Kepulauan_Seribu",
     },
     {
-      image: labuanBajoImage,
+      image: "https://static.promediateknologi.id/crop/0x0:0x0/0x0/webp/photo/p2/212/2024/06/30/IMG-20240630-WA0012-2991586499.jpg",
       name: "Labuan Tidung",
-      path: "https://id.wikipedia.org/wiki/Pulau_Tidung,_Kepulauan_Seribu_Selatan,_Kepulauan_Seribu",
+      path: "https://id.wikipedia.org/wiki/Pulau_Tidung_Besar",
     },
   ];
 
@@ -97,7 +97,7 @@ const Home = () => {
       <div className="banner-container mt-0">
         <img
           className="d-block w-100 banner-image"
-          src={"https://p0.piqsels.com/preview/1017/523/650/4k-wallpaper-background-beautiful-beauty.jpg"}
+          src={"https://images.pexels.com/photos/1021073/pexels-photo-1021073.jpeg"}
           alt="Banner Image"
           style={{ height: '600px', objectFit: 'cover' }}
         />

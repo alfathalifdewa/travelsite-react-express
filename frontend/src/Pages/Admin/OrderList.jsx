@@ -78,8 +78,8 @@ const OrderListPage = () => {
               <th>Tanggal Order</th>
               <th>Total Harga</th>
               <th>Nama</th>
-              <th>Status</th>
-              <th>Actions</th>
+              {/* <th>None</th> */}
+              <th>Pemesanan</th>
             </tr>
           </thead>
           <tbody>
@@ -95,11 +95,11 @@ const OrderListPage = () => {
                   }).format(order.total)}
                 </td>
                 <td>{order.user?.username || 'Unknown User'}</td>
-                <td>
+                {/* <td>
                   <span className={`badge ${getOrderStatusBadge(order.status)}`}>
                     {order.status || 'Pending'}
                   </span>
-                </td>
+                </td> */}
                 <td>
                   <Button
                     variant="info"
