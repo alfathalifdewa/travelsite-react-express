@@ -114,14 +114,14 @@ const MyOrder = () => {
                           {order.items && order.items.map(item => (
                             <ListGroup.Item key={item._id}>
                               <Row>
-                                <Col md={2}>
+                                {/* <Col md={2}>
                                   <img 
                                     src={item.product?.image || '/placeholder-image.jpg'} 
                                     className="img-fluid" 
                                     alt={item.product?.productName || 'Product'}
                                     style={{ maxHeight: '80px', objectFit: 'cover' }}
                                   />
-                                </Col>
+                                </Col> */}
                                 <Col md={6}>
                                   <strong>{item.product?.productName || 'Unknown Product'}</strong>
                                 </Col>
@@ -158,19 +158,31 @@ const MyOrder = () => {
                                     <ListGroup variant="flush">
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col sm={4}><strong>Nama:</strong></Col>
+                                          <Col sm={4}><strong>Nama :</strong></Col>
                                           <Col sm={8}>{selectedOrderDetails[order.transactionId].user?.username || 'Unknown User'}</Col>
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col sm={4}><strong>Alamat:</strong></Col>
+                                          <Col sm={4}><strong>Nomor Telpon :</strong></Col>
+                                          <Col sm={8}>{selectedOrderDetails[order.transactionId].phone || 'No address provided'}</Col>
+                                        </Row>
+                                      </ListGroup.Item>
+                                      <ListGroup.Item>
+                                        <Row>
+                                          <Col sm={4}><strong>Alamat :</strong></Col>
                                           <Col sm={8}>{selectedOrderDetails[order.transactionId].address || 'No address provided'}</Col>
                                         </Row>
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col sm={4}><strong>Payment Method:</strong></Col>
+                                          <Col sm={4}><strong>Email :</strong></Col>
+                                          <Col sm={8}>{selectedOrderDetails[order.transactionId].email || 'No address provided'}</Col>
+                                        </Row>
+                                      </ListGroup.Item>
+                                      <ListGroup.Item>
+                                        <Row>
+                                          <Col sm={4}><strong>Payment Method :</strong></Col>
                                           <Col sm={8}>
                                             {selectedOrderDetails[order.transactionId].midtransStatus?.payment_type || 'Pending'}
                                           </Col>
@@ -178,7 +190,7 @@ const MyOrder = () => {
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col sm={4}><strong>Payment Status:</strong></Col>
+                                          <Col sm={4}><strong>Payment Status :</strong></Col>
                                           <Col sm={8}>
                                             <span className={`badge ${
                                               selectedOrderDetails[order.transactionId].midtransStatus?.transaction_status === 'settlement' ? 'bg-success' : 
@@ -192,7 +204,7 @@ const MyOrder = () => {
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col sm={4}><strong>Total Pembayaran:</strong></Col>
+                                          <Col sm={4}><strong>Total Pembayaran :</strong></Col>
                                           <Col sm={8}>
                                             <strong>Rp {formatCurrency(selectedOrderDetails[order.transactionId].total)}</strong>
                                           </Col>
@@ -200,7 +212,7 @@ const MyOrder = () => {
                                       </ListGroup.Item>
                                       <ListGroup.Item>
                                         <Row>
-                                          <Col sm={4}><strong>Order Date:</strong></Col>
+                                          <Col sm={4}><strong>Order Date :</strong></Col>
                                           <Col sm={8}>
                                             {new Date(selectedOrderDetails[order.transactionId].createdAt).toLocaleString()}
                                           </Col>
@@ -209,7 +221,7 @@ const MyOrder = () => {
                                       <ListGroup.Item>
                                         <Row>
                                           <Col>
-                                            <strong>Pemberitahuan:</strong> Jika Sudah Melakukan Pemesanan/Transaksi Harapan Hubungi Kontak atau Sosial Media Kami, Agar Pemesanan Dapat Cepat di Proses Oleh Admin Terima Kasih Hormat Kami Travel Mata Elang.
+                                            <strong>Pemberitahuan:</strong> Jika sudah melakukan Pemesanan/Transaksi harapan hubungi kontak atau sosial media kami, agar pemesanan dapat cepat di proses oleh admin Terima Kasih Hormat Kami Travel Mata Elang.
                                           </Col>
                                         </Row>
                                       </ListGroup.Item>
