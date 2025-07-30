@@ -169,7 +169,7 @@ const DetailProduct = () => {
               </div>
               <hr />
               <div className="product-deskripsi">
-                <h3><b>Deskripsi</b></h3>
+                <h3><b>Deskripsi dan Promo</b> : Dapatkan Potongan Harga Hingga Rp80.000 Khusus dibulan Agustus. Buruan, Pesan Sekarang!”</h3>
                 {product.desc ? (
                   product.desc.split('\n').map((line, index) => (
                     <p key={index}>{line}</p>

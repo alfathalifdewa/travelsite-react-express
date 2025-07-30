@@ -54,6 +54,9 @@ const About = () => {
                     Mata Elang Travel adalah partner perjalanan terpercaya untuk 
                     menjelajahi destinasi wisata terbaik di Indonesia dan mancanegara.
                   </h4>
+                  <h4>
+                    “Rayakan Kemerdekaan dengan Liburan Hemat! Dapatkan Potongan Harga Hingga Rp80.000 Khusus Bulan Agustus. Buruan, Pesan Sekarang!”
+                  </h4>
                 </Col>
               </Row>
             </Container>
